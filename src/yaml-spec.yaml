@@ -1,0 +1,59 @@
+header:
+  type: object
+  fields:
+    title:
+      type: string
+    subtitle:
+      type: string
+klantinfo:
+  type: object
+  fields:
+    naam:
+      type: string
+    straat:
+      type: string
+    postcode:
+      type: string
+    plaats:
+      type: string
+factuurinfo:
+  type: object
+  fields:
+    nummer:
+      type: number
+    datum:
+      type: string
+leveranciersinfo:
+  type: table
+  columns:
+    key:
+      type: string
+    value:
+      type: string
+factuurregels:
+  type: table
+  columns:
+    beschrijving:
+      type: string
+    datum:
+      type: string
+    aantal:
+      type: number
+    prijs:
+      type: number
+    totaal:
+      type: number
+eindtotalen:
+  type: object
+  fields:
+    totaal ex:
+      type: number
+    btw:
+      type: number
+    totaal incl:
+      type: number
+slottekst:
+  type: string
+plaatjes:
+  type: list
+  item type: string

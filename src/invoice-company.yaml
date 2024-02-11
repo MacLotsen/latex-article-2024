@@ -1,0 +1,12 @@
+header:
+  title: Factuur
+  subtitle: Xerdi
+leveranciersinfo:
+  - key: Bedrijf
+    value: Xerdi
+  - key: Adres
+    value: Frans Halsstraat 38
+  - key: Website
+    value: xerdi.com
+plaatjes:
+  - xerdi-logo.png

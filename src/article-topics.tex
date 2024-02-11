@@ -1,0 +1,79 @@
+\documentclass[11pt]{article}
+
+
+\begin{document}
+    \noindent
+    Mogelijke onderwerpen voor artikelen per \LaTeX-pakket:
+
+    \begin{description}
+        \item[gitinfo-lua] Ontwikkelt met Lua\LaTeX{}.\\
+        Mogelijke onderwerpen:
+        \begin{itemize}
+            \item Samenwerken in een \LaTeX-project met Git.\\
+            {
+                \footnotesize
+                Niet per se gerelateerd aan \texttt{gitinfo-lua}, echter weet ik niet hoe bekend Git is voor het publiek van MAPS.
+                Ik zou een kort artikel of een paragraaf daarover kunnen schrijven, mocht daar behoefte voor zijn.
+                Aan de andere kant staat het internet vol met voorbeelden van Git.\\
+                Sleutelwoorden: \textbf{git, samenwerken, wijzigingsbeheer}
+            }
+            \item Documentversies en -auteurs bepalen vanuit Git.\\
+            {
+                \footnotesize
+                Basis functionaliteit van \texttt{gitinfo-lua} die uitsluitend vertrouwt op data in Git.
+                Dit verhuist de administratie van auteurs en documentversies naar Git en zorgt er dus voor dat er niet meer in \LaTeX-bestanden versies of auteurs aangepast hoeven te worden.
+                Kan eventueel aangevuld worden met wat Git handson.\\
+                Sleutelwoorden: \textbf{versiebeleid, auteursbeleid, eenduidig beleid}
+            }
+            \item Documentwijzigingen opsommen vanuit Git.\\
+            {
+                \footnotesize
+                De meest geävanceerde functionaliteit die het pakket biedt, namelijk het opsommen van de Git historie in bijvoorbeeld een \texttt{tabular} omgeving.\\
+                Sleutelwoorden: \textbf{wijzigingstabel}
+            }
+        \end{itemize}
+        \item[lua-placeholders] Ontwikkelt met Lua\LaTeX{}.\\
+        Mogelijke onderwerp:
+        \begin{itemize}
+            \item Documentvariabelen specificeren met YAML.\\
+            {
+                \footnotesize
+                Dit pakket heb ik voornamelijk geschreven om data buiten het \LaTeX\ domein te houden, wat het perfect maakt voor documentautomatisering, waar ik als Software Engineer veel mee te maken heb.
+                Voor een probleemstelling zou ik de source van GinVoice erbij kunnen pakken, want daar is het nog provisorisch in \LaTeX\ en Python verwikkeld.
+                Hierin kan ik laten zien hoe los van \LaTeX-bestanden documentvoorbeelden en ingevulde versies gecompileerd kunnen worden.
+                Zonder het aanleveren van een extra YAML-bestand worden ontbrekende variabelen ingevuld met een placeholder.
+                Het idee daarachter is dat een \LaTeX-bestand ten alle tijde gecompileerd kan worden.\\
+                Sleutelwoorden: \textbf{YAML, data, systeemintegratie}
+            }
+        \end{itemize}
+        \item[regulatory] Ontwikkelt met \LaTeX{}.\\
+        Mogelijke onderwerpen:
+        \begin{itemize}
+            \item Juridische structuren.\\
+            {
+                \footnotesize Korte demonstratie van nieuwe structuren, zoals artikelen, leden en onderdelen.\\
+                Sleutelwoorden: \textbf{structuren, ondergetekenden, algemene bepalingen, handtekeningvelden}
+            }
+            \item Definitielijsten met \texttt{bib2gls}.\\
+            {
+                \footnotesize Definities worden aangehaald met \verb|\gls| en gespecificeerd in bib-bestanden.
+                Deze zijn ook aan te halen vanuit andere documenten.\\
+                Sleutelwoorden: \textbf{definities, bib2gls, glossaries}
+            }
+            \item Automatisch verwijzingen formuleren.\\
+            {
+                \footnotesize Het verwijzingssysteem van regulatory kan a.d.h.v.\ de nieuwe structuren een juridische verwijzing automatisch formuleren in Engels en Nederlands.
+                De verwijzingen, zowel externe verwijzingen, zijn voorzien van hyperlinks.\\
+                Sleutelwoorden: \textbf{hyperref, zref}
+            }
+            \item Documenten als bijlage toevoegen.\\
+            {
+                \footnotesize Voor extra volledigheid is deze functionaliteit toegevoegd.
+                Namelijk, voor een overeenkomst is het handig als de algemene voorwaarden daaraan toegevoegd is, zodat het sowieso duidelijk is welke versie van de algemene voorwaarden destijds van toepassing waren.
+                Dit pakket speelt daarnaast slim in bij de eerste verschijning van een externe verwijzing en plaatst daarbij een corresponderende footnote.\\
+                Sleutelwoorden: \textbf{attachfile2, footnotes}
+            }
+        \end{itemize}
+    \end{description}
+
+\end{document}
