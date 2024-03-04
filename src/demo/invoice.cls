@@ -48,24 +48,24 @@
 \RequirePackage[table]{xcolor}
 \RequirePackage{colortbl}
 \newbool{styletable}
-\global\boolfalse{styletable}
+\boolfalse{styletable}
 \colorlet{bgcolor}{white}
 \colorlet{textcolor}{black}
-\global\def\continuationheader{}
-\global\def\continuationfooter{z.o.z.}
+\def\continuationheader{}
+\def\continuationfooter{z.o.z.}
 
 \pagestyle{empty}
 \linespread{1.4}
 
 \newcommand\financial[1]{\texttt{\np{#1}}}
 
-\newcommand{\makeheader}{%
+\newcommand{\makeheader}[2]{%
     \makeatletter
     \begin{center}
         \color{textcolor}
-        {\Huge\textbf{\title} \\}
+        {\Huge\textbf{#1} \\}
         \vspace{-.3cm}
-        {\Large\textbf{\subtitle} \\}
+        {\Large\textbf{#2} \\}
     \end{center}
     \makeatother
 }

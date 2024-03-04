@@ -1,0 +1,66 @@
+\documentclass[dutch]{ltugboat}
+\usepackage{babel}
+\usepackage[T1]{fontenc}
+\usepackage[simplified]{pgf-umlcd}
+\usetikzlibrary{calc}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[hidelinks,pdfa]{hyperref}
+\usepackage{listings}
+\usepackage{ulem}
+\usepackage{wasysym}
+%\title{Documentvariabelen met YAML}
+\title{Documenten in YAML specificeren en invullen met lua-placeholders in LaTeX}
+
+% repeat info for each author; comment out items that don't apply.
+\author{Erik Nijenhuis}
+\address{Frans Halsstraat 38\\ Leeuwarden, 8932 JC \\ The Netherlands}
+\netaddress{erik (at) xerdi dot com}
+\personalURL{https://github.com/MacLotsen}
+%\ORCID{0}
+% To receive a physical copy of the TUGboat issue, please include the
+% mailing address we should use, as a comment if you prefer it not be printed.
+
+% Tikz setup
+\renewcommand{\umltextcolor}{black}
+\renewcommand{\umlfillcolor}{white}
+\renewcommand{\umldrawcolor}{black}
+
+\def\pkg#1{\texttt{#1}}
+
+\lstset{columns=fullflexible}
+
+\begin{document}
+    \maketitle
+
+    \begin{abstract}
+        Dit artikel demonstreert hoe documentvariabelen gespecificeerd en aangeleverd kunnen worden in YAML en hoe dat vervolgens kan helpen binnen systeemintegratie aan de hand van een open-source factuur applicatie.
+    \end{abstract}
+
+    \section*{Keywords}
+    \LuaTeX, \LuaLaTeX, YAML, \sout{Python}
+
+%    \tableofcontents
+
+    \input{sections/inleiding}
+
+    \input{sections/legacy-factuur}
+
+    \input{sections/yaml-interfaces}
+
+    \input{sections/uitvoering}
+    % notes on ginvoice
+    % Removed the \input{meta} from invoice2.cls
+    % Removed the hypersetup
+
+    \section{Conclusie}
+    % Samenvatting van hoe lua-placeholders hebben bijgedragen aan het optimaliseren van documentautomatisering.
+    % Aansporing voor lezers om lua-placeholders te verkennen en te implementeren in hun eigen projecten.
+
+    % Mogelijkheden voor systeemintegratie en automatisering met lua-placeholders.
+    % Vergelijking met alternatieve methoden en waarom lua-placeholders de beste keuze waren.
+    \bibliographystyle{tugboat}%
+    \bibliography{references}       % xampl.bib comes with BibTeX
+
+    \makesignature
+\end{document}

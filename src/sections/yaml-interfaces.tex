@@ -1,0 +1,78 @@
+\section{YAML-Interfaces met \texttt{lua-placeholders}}
+Dit hoofdstuk introduceert het gebruik van \pkg{lua-placeholders} in YAML-interfaces voor het verbeteren van factuur\-template-functionaliteiten.
+We zullen bespreken waarom het upgraden van bestaande factuurtemplates naar een meer flexibele en geautomatiseerde oplossing noodzakelijk is.
+Daarnaast zullen we de voordelen van \pkg{lua-placeholders} introduceren en hun toepassing in YAML-interfaces verkennen.
+Het uiteindelijke doel is om een efficiënte en aanpasbare facturatie-oplossing te bieden, die gemakkelijk geïntegreerd kan worden in \LaTeX- en andere documentautomatisering-systemen.
+
+\subsection{YAML-specificaties}
+We zullen nu de YAML-specificaties m.b.t.\ de factuur bekijken:
+
+\subsubsection{De Factuur}
+\lstinputlisting[language=YAML,caption={\texttt{recipes/invoice.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+De YAML-specificatie geeft een overzicht van alle variabelen en hun eigenschappen, inclusief bijzondere situaties zoals het gebruik van LaTeX-code in de standaardwaarde van de titel en de complexe placeholders in het bericht.
+Verder worden de waarden van de variabelen supplier en client gebruikt om de waarden van andere onderdelen in te laden, maar de configuratie hiervan wordt in het volgende hoofdstuk besproken.
+
+\subsubsection{Klant}
+\lstinputlisting[language=YAML,caption={\texttt{recipes/client.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/client.yaml}
+
+\subsubsection{Leverancier}
+\lstinputlisting[language=YAML,caption={\texttt{recipes/supplier.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/supplier.yaml}
+In het geval van de YAML-specificatie voor de leverancier heeft het veld \texttt{style} dezelfde functie als \texttt{supplier} en \texttt{client} van de factuur, waardoor de gebruiker kan kiezen welke stijl wordt toegepast.
+
+Een ander interessant veld in deze specificatie is \texttt{extra fields}.
+Dit veld maakt gebruik van het type \texttt{table} om extra informatievelden toe te staan, zoals bijvoorbeeld het rekeningnummer van de leverancier, het BTW-nummer, of andere relevante details.
+Het gebruik van een tabel in plaats van een vast aantal velden geeft de eindgebruiker de flexibiliteit om zoveel extra informatie toe te voegen als nodig is, zonder beperkingen.
+
+\subsubsection{Stijl}
+\lstinputlisting[language=YAML,caption={\texttt{recipes/style.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/style.yaml}
+Deze YAML-specificatie definieert de stijlopties die van toepassing zijn op de factuur.
+
+\subsection{Nieuwe \LaTeX-template}
+Nu de YAML-specificaties in orde zijn kunnen we over stappen naar het integreren in \LaTeX.
+
+\subsubsection{Specificaties Inladen}
+YAML-specificaties, ook wel \textit{recipes} genoemd, worden ingeladen met \cs{loadrecipe}.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=44,linerange=44-47]{demo/invoice.tex}
+Je ziet voor de \texttt{invoice} specificatie dat het de namespace \cs{jobname} krijgt.
+Dit heeft te maken met het feit dat macro \cs{param} standaard \cs{jobname} als \meta{namespace} gebruikt, wat het gebruik versimpelt.
+
+De andere \textit{recipes} geven geef extra \meta{namespace} op, wat betekent dat ze de `basename' van het pad als namespace dragen.
+In dit geval respectievelijk \texttt{supplier}, \texttt{client} en \texttt{style}.
+
+\subsubsection{Munteenheid}
+Voor wat betreft de munteenheid heb ik gekozen het in de macro \cs{currency} te vermommen.
+Dit vanwege het feit dat het ook in andere bestanden gebruikt wordt, zoals \texttt{invoice.cls}.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=49,linerange=49]{demo/invoice.tex}
+Mocht de \meta{currency} niet gezet zijn, dan wordt de standaardwaarde van \texttt{style.yaml} gebruikt, namelijk \cs{EUR}.
+
+\subsubsection{Waarden Inladen}
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=51,linerange=51-54]{demo/invoice.tex}
+
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=56,linerange=56-58]{demo/invoice.tex}
+
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=60,linerange=60-71]{demo/invoice.tex}
+
+\subsection{Verwerken in Document}
+
+\subsubsection{Header (Object)}
+Wat eerder neer kwam op \cs{makeheader}, gaat helaas nu niet meer op.
+Een bijzonder hinderlijke keuze was het, om het gegenereerde bestand \texttt{meta.tex} vanuit \texttt{invoice.cls} in te laden.
+Voor de nieuwe versie is dit ongewenst, en ik raad het je ook zeker \underline{niet} aan om data in documentklassen te verwerken.
+
+Voor nu gaan we er van uit dat \texttt{invoice.cls} zodanig is aangepast dat het geen fouten meer veroorzaakt en dat \cs{makeheader} nu de titel en subtitel als argumenten verwacht:
+\begin{lstlisting}[language={[LaTeX]TeX}]
+\thispagestyle{headermain}
+\makeheader
+    {\param{title}}
+    {\param{subtitle}}
+\vspace{2cm}
+\end{lstlisting}
+In het voorbeeld zijn er maar twee verschillen met betrekking tot de nieuwe versie, namelijk:\\
+\cs{title} \textrightarrow \lstinline[language={[LaTeX]TeX}]|\param{title}|\\
+\cs{subtitle} \textrightarrow \lstinline[language={[LaTeX]TeX}]|\param{subtitle}|
+
+\subsubsection{Informatie}
+
+\subsubsection{Tabel}
+
+\subsubsection{Slottekst}

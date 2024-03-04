@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+    \begin{class}[text width=5cm]{Invoice}{1.75,0}
+        \attribute{title : String = Factuur}
+        \attribute{subtitle : String}
+        \attribute{currency : String = \cs{EUR}}
+        \attribute{number : Number}
+        \attribute{date : String = \cs{today}}
+        \attribute{records : Table}
+        \attribute{totals : Table/Object}
+        \attribute{ending : String}
+    \end{class}
+    \begin{class}[text width=3cm]{Supplier}{3.5,-4.75}
+        \attribute{email : String}
+        \attribute{website : String}
+        \attribute{accountnr : String}
+    \end{class}
+    \begin{class}[text width=3cm]{Client}{0,-4.75}
+        \attribute{name : String}
+        \attribute{street : String}
+        \attribute{postal : String}
+        \attribute{place : String}
+    \end{class}
+    \begin{class}[text width=4cm]{Style}{3,-7.5}
+        \attribute{images : List}
+        \attribute{main font : String}
+        \attribute{mono font : String}
+        \attribute{foreground color : String}
+        \attribute{background color : String}
+        \attribute{\sout{colored table} : Boolean}
+    \end{class}
+    \draw[umlcd style, diamond-angle 45] ($(Invoice.south west) - (-1.25,0)$) -- ($(Client.north) + (.375,0)$);
+    \draw[umlcd style, diamond-angle 45] ($(Invoice.south east) + (-1.25,0)$) -- ($(Supplier.north) + (-.375,0)$);
+    \draw[umlcd style, diamond-angle 45] ($(Supplier.south) + (-.375,0)$) -- ($(Style.north) + (.125,0)$);
+\end{tikzpicture}
