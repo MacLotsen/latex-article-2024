@@ -1,21 +1,168 @@
-\section{Uitvoering}
+\section{Uitvoering}\label{sec:output}
 % Geavanceerde YAML payload voorbeelden, + sequence diagram command line
+Nu de legacy factuur volledig is getransformeerd, kunnen we gaan kijken wat het resultaat daarvan is.
+Mocht je mee willen doen via de commandline, bekijk dan de volledige source-code\cite{ginvoice-template} van deze voorbeelden.
 
 \subsection{De Template Versie}
-\setlength\fboxsep{0pt}
-\fbox{\includegraphics[width=\linewidth]{invoice-template.pdf}}
+Zonder enige waarden aan te leveren krijgen we het volgende resultaat, te zien in figuur~\ref{fig:template}.\\
+\setlength\fboxsep{0pt}%
+\begin{figure}[!ht]%
+    \fbox{\includegraphics[width=\linewidth-1pt]{invoice-template.pdf}}%
+    \caption{\texttt{invoice-template.pdf}}\label{fig:template}%
+\end{figure}
+Zoals eerder gezegd is \pkg{lua-placeholders} alleen met \LuaLaTeX\ te compileren.
+Daarnaast is de optie \texttt{--shell-escape} vereist, om YAML-bestanden in te kunnen laden.
+Het voorbeeld kan als volgt gecompileerd worden:
+\begin{lstlisting}[language=bash,caption={Compileren met \texttt{lualatex}}]
+lualatex --shell-escape \
+     --jobname=invoice-template \
+     --output-directory=$(OUTPUT_DIR) \
+       invoice
+\end{lstlisting}
+Waar \texttt{\$(OUTPUT\_DIR)} de gewenste uitvoer map is.
+
+Echter, als je een template aan het opmaken bent, dan is blijvend genereren met \LaTeX MK gebruiksvriendelijker:
+\begin{lstlisting}[language=bash,caption={Compileren met \texttt{latexmk}}]
+latexmk -pvc -lualatex \
+    --shell-escape \
+    --jobname=invoice-template \
+    --output-directory=$(OUTPUT_DIR) \
+      invoice
+\end{lstlisting}
+Zo hoef je bij iedere wijziging in \TeX\ niet opnieuw te compileren, maar gebeurt dat vanzelf.
 
 \subsection{YAML-waarden}
+Om een ingevulde factuur te krijgen zullen we de volgende YAML-bestanden nodig hebben:
 
-\subsection{Ingevulde Versie}
-% Overwegingen voor anderen die overwegen dit pakket te gebruiken.
+\dirtree{%
+    .1 \meta{project dir}.
+    .2 invoices.
+    .3 \meta{invoice}.yaml.
+    .2 suppliers.
+    .3 \meta{supplier}.yaml.
+    .2 styles.
+    .3 \meta{style}.yaml.
+    .2 clients.
+    .3 \meta{client}.yaml.
+}
+
+Deze structuur is gebaseerd op de implementatie beschreven in hoofdstuk~\ref{sec:preamble}.
+Voordat de inhoud van de YAML-bestanden besproken wordt, kunnen we eerst alternatieve projectstructuren overwegen.
+
+\subsubsection{Alternatieve Projectstructuur}
+Het staat iedereen natuurlijk vrij om zelf een gewenste mappenstructuur aan te leggen.
+Zo zou je bijvoorbeeld styles onder\\
+\hspace*{4em}\texttt{/suppliers/\meta{supplier}/style.yaml}\\
+kunnen zetten, zodat je zelfs het \texttt{style} veld kunt weglaten in het leveranciers-recept.
+Een ander goed voorbeeld is bijvoorbeeld de \texttt{clients} map onder leveranciersniveau kunnen plaatsen, zodat je niet per ongeluk klanten van leveranciers door elkaar haalt.
+Dit zou je kunnen realiseren door het volgende te doen:
+\dirtree{%
+    .1 \meta{project dir}.
+    .2 suppliers.
+    .3 \meta{supplier}.yaml.
+    .3 \meta{supplier}.
+    .4 \meta{client}.yaml.
+}
+\noindent
+Op deze manier zou de implementatie voor het inladen van klanten de variabelen \meta{supplier} en \meta{client} vereisen, om vervolgens tot het pad\\
+\hspace*{4em}\texttt{suppliers/\meta{supplier}/\meta{client}.yaml}\\
+te komen.
+
+Dezelfde overweging zou voor de facturen toegepast kunnen worden, echter is dit een lastiger scenario, aangezien de factuurdata wordt gebaseerd op de \cs{jobname} in de implementatie van hoofdstuk~\ref{sec:preamble}.
+Een mogelijke oplossing hiervoor is om het project per leverancier te beheren.
+Je kunt dan de \textit{recepten} in de map \texttt{\$TEXMFHOME/tex} zetten, zodat deze voor alle projecten aanwezig zijn.
+Hier een voorbeeld van een mogelijke projectstructuur:\\
+\begin{minipage}{.49\linewidth}
+\dirtree{%
+    .1 \$HOME/texmf/tex.
+    .2 recipes.
+    .3 invoice.yaml.
+    .3 client.yaml.
+    .3 supplier.yaml.
+    .3 style.yaml.
+    .2 invoice.cls.
+    .2 invoice.tex.
+}
+\end{minipage}%
+\hfill
+\begin{minipage}{.49\linewidth}
+\dirtree{%
+    .1 \meta{project dir}.
+    .2 invoices.
+    .3 \meta{invoice}.yaml.
+    .2 clients.
+    .3 \meta{client}.yaml.
+    .2 supplier.yaml.
+    .2 style.yaml.
+}
+\end{minipage}
+In dit voorbeeld is alle data met betrekking op een leverancier gescheiden, waaronder de klantinformatie en de uiteindelijke facturen.
+
+\subsection{Leveranciers en Klanten}\label{sec:supplier and client}
+In het voorbeeld resultaat van GinVoice was een klant \textit{Juicing Joker} te zien.
+In YAML zou dat neer komen op:
+\lstinputlisting[captionpos=b,caption={\texttt{clients/juicing-joker.yaml}}]{demo/clients/juicing-joker.yaml}
+
+Op deze manier kan de klant aangehaald worden in de factuur met \texttt{juicing-joker}.
+
+Voor de leverancier zagen we \textit{Grapefruit Inc.}\ in het voorbeeld, wat neerkomt op:
+\lstinputlisting[captionpos=b,caption={\texttt{suppliers/grapefruit.yaml} of \texttt{grapefruit/supplier.yaml}}]{demo/suppliers/grapefruit.yaml}
+
+En voor de stijl:
+\lstinputlisting[captionpos=b,caption={\texttt{styles/grapefruit.yaml} of \texttt{grapefruit/style.yaml}}]{demo/styles/grapefruit.yaml}
+
+Het voordeel van de alternatieve projectstructuur is dat \texttt{invoice-template} automatisch de styling oppakt evenals de leveranciersinformatie, te zien in figuur~\ref{fig:result alt}.
+
+\onecolumn
+\subsection{Facturen}
 \begin{figure}[!ht]
-    \centering
-    \includegraphics[width=.8\linewidth]{invoice-002.pdf}%
-    \makebox[0pt][r]{%
-        \raisebox{-2em}{%
-            \colorbox{white}{\includegraphics[width=.8\linewidth]{invoice-001.pdf}}%
-        }\hspace*{1em}%
-    }%
-    \caption{Factuur 1 en 2}
+%    \centering
+    \begin{subfigure}{.32\linewidth}
+        \fbox{\includegraphics[width=\linewidth-1pt]{invoice2-template.pdf}}
+        \caption{\texttt{invoice-template.pdf}}\label{fig:result alt}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.32\linewidth}
+        \fbox{\includegraphics[width=\linewidth-1pt]{invoice-001.pdf}}
+        \caption{\texttt{invoice-001.pdf}}\label{fig:result 1}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.32\linewidth}
+        \fbox{\includegraphics[width=\linewidth-1pt]{invoice-002.pdf}}
+        \caption{\texttt{invoice-002.pdf}}\label{fig:result 2}
+    \end{subfigure}
+    \caption{Factuurvoorbeelden}\label{fig:pdfs}
 \end{figure}
+\begin{multicols}{2}
+    \noindent
+    Om een factuur te maken die exact overeenkomt met het standaard voorbeeld van GinVoice, zoals te zien in figuur~\ref{fig:result 1}, maken we gebruik van het volgende YAML-voorbeeld:
+    \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=-15,caption={\texttt{invoices/invoice-001.yaml}}]{demo/invoices/invoice-001.yaml}
+    De actoren \texttt{grapefruit} en \texttt{juicing-joker}, besproken in hoofdstuk~\ref{sec:supplier and client}, zien we terug in de factuur.
+    Daarnaast heeft het voorbeeld dezelfde algemene informatie om tot hetzelfde resultaat te komen.
+    Bij het veld \texttt{records} zie je dat een rij van de tabel veel regels inneemt.
+    Bij de tweede rij van de tabel zie je dat het veld \texttt{description} een lege waarde heeft.
+    \columnbreak
+    Mochten de quotes weggelaten worden in YAML, dan krijg je een fout bij het converteren naar data.
+    Aangezien de rijen niet al te veel verschillen van elkaar, vervolgen we het voorbeeld bij het veld \texttt{totals}:
+    \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=34-,firstnumber=34]{demo/invoices/invoice-001.yaml}
+    Als laatste in het voorbeeld zien we de totalen en de slottekst.
+
+    Deze factuur kan vervolgens gecompileerd worden met de volgende opdracht:
+    \begin{lstlisting}[language=bash]
+lualatex --shell-escape \
+    --jobname=invoice-001 \
+    --output-directory=$(OUTPUT_DIR) \
+      invoice
+    \end{lstlisting}
+%    Het enige verschil tussen het compileren van de template versie is de \cs{jobname}.
+\end{multicols}
+\twocolumn
+
+%\begin{figure}[!ht]
+%    \centering
+%    \includegraphics[width=.8\linewidth]{invoice-002.pdf}%
+%    \makebox[0pt][r]{%
+%        \raisebox{-2em}{%
+%            \colorbox{white}{\includegraphics[width=.8\linewidth]{invoice-001.pdf}}%
+%        }\hspace*{1em}%
+%    }%
+%    \caption{Factuur 1 en 2}
+%\end{figure}

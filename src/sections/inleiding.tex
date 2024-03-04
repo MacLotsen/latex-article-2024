@@ -1,74 +1,67 @@
 \section{Inleiding}
-Tijdens mijn werk voor juristen werd ik geconfronteerd met de uitdaging om klantinformatie te anonimiseren in juridische documenten, zoals overeenkomsten en voorwaarden, waarbij ik juist een scheiding nodig had tussen de inhoud en klantgegevens.
-Dit kan, zoals eerder toegepast in GinVoice, door extra TeX-bestanden te genereren en in het hoofdbestand in te laden.
-Echter, mijn doel was om een oplossing te vinden die out of the box werkt vanuit het LaTeX domein, zonder afhankelijk te zijn van een Python GTK-applicatie.
-Deze beperkingen waren vergelijkbaar met de uitdagingen die ik eerder had ervaren bij de ontwikkeling van GinVoice\cite{ginvoice}, een open-source project van mij.
-Deze ervaringen leidden tot de noodzaak om een betere oplossing te vinden voor het scheiden van \LaTeX-documenten en klantgegevens.
-Mijn zoektocht naar een geschikte oplossing bracht mij tot het ontwikkelen van het \LaTeX-pakket \pkg{lua-placeholders}\cite{lua-placeholders}, een tool die het mogelijk maakt om klantinformatie op een efficiënte manier te integreren in \LaTeX-documenten, terwijl de gevoelige gegevens gescheiden blijven in YAML-bestanden.
+Tijdens mijn werk als Software Engineer werd ik geconfronteerd met een uitdaging voor een bedrijf wat overeenkomsten en voorwaarden opstelt voor meerdere klanten.
+Een lastige uitdaging daarin was het gescheiden houden van de klantgegevens en regelgevende documentatie.
+Dit kan, zoals ik eerder had toegepast in GinVoice\cite{ginvoice}, door extra \LaTeX-bestanden te genereren met Python waardoor vervolgens het \LaTeX-hoofdbestand gecompileerd kan worden.
+Echter, dit maal was mijn doel om een oplossing te bieden vanuit het \LaTeX-domein zelf, in plaats van het applicatiedomein.
+De oplossing die ik daarvoor heb geschreven heet tegenwoordig \pkg{lua-placeholders}\cite{lua-placeholders} en introduceert een gedeelde datalaag met YAML tussen \LaTeX\ en applicatie code.
+Het pakket biedt een tussenlaag, speciaal bedoeld voor data, door middel van YAML-bestanden.
+Om deze oplossing te demonstreren pakken we GinVoice.
+Dit voorbeeld, een Python GTK-applicatie die facturen genereert met \LaTeX, biedt net wat meer complexiteit en uitdagingen dan het juridisch domein te bieden heeft.
 
-\subsection{De Compiler}
-Mijn beslissing om \LuaLaTeX\ als compiler te gebruiken, was gebaseerd op verschillende overwegingen en ervaringen.
+\subsection{De Compiler -- \LuaLaTeX}
+Mijn beslissing om \LuaLaTeX\ als compiler te gebruiken, had meerdere redenen.
 Sinds 2016 maak ik gebruik van \LuaLaTeX, wat me destijds voor documenten binnen de computerwetenschap enorm heeft geholpen.
 In alle afgelopen jaren heb ik veel ervaring opgedaan in het compileren met \LuaLaTeX\ en zie ik het als ontwikkelaar als een geschikte compiler, dankzij de mogelijkheid om in Lua te scripten, wat ik als programmeur uiteraard enorm waardeer.
 
 De mogelijkheid om in Lua te scripten biedt een aantal voordelen.
-Het stelt mij in staat om complexe taken uit te voeren tijdens het compileerproces, zoals het verwerken van YAML-bestanden, het manipuleren van gegevens of zelfs het uitvoeren van dynamische berekeningen.
-Bovendien biedt \LuaLaTeX\ ondersteuning voor Lua init scripts, waarmee ik aangepaste compilatiestappen kan implementeren en een specifieke CLI (Command Line Interface) kan ontwikkelen voor onze klanten, waardoor het integratieproces nog verder wordt vereenvoudigd en geoptimaliseerd.
-
-
-Hoewel \LuaLaTeX\ dus een krachtige compiler is die veel mogelijkheden biedt, is het belangrijk op te merken dat de focus van dit artikel niet ligt op de Lua-scriptingmogelijkheden van \LuaLaTeX, maar eerder op het integreren van klantgegevens in LaTeX-documenten met behulp van het \pkg{lua-placeholders} pakket.
+Het stelt mij in staat om complexe taken uit te voeren tijdens het compileerproces, zoals het verwerken van YAML-bestanden of het manipuleren en structureren van gegevens.
+Bovendien biedt \LuaLaTeX\ ondersteuning voor Lua init scripts, waarmee ik een aangepast compilatieproces kan implementeren met een eigen CLI (Command Line Interface), waardoor het integratieproces nog verder wordt vereenvoudigd en geoptimaliseerd voor eindoplossingen.
 
 \subsection{Wat is YAML?}
 Als DevOps Engineer ben ik vaak YAML tegengekomen bij het werken met tools zoals Docker Compose, Travis CI, GitHub Actions en NetPlan van Canonical (Ubuntu systemen).
-YAML wordt veel gebruikt in de DevOps-wereld voor het automatiseren en beheren van configuraties, waarbij het fungeert als een gestructureerde opmaaktaal voor het definiëren van configuratiebestanden en het vastleggen van infrastructurele en operationele aspecten van softwaretoepassingen.
+YAML wordt veel gebruikt in de DevOps-wereld voor het automatiseren en beheren van configuraties, waarbij het functioneert als een gestructureerde opmaaktaal voor het definiëren van configuratiebestanden en het vastleggen van infrastructurele en operationele aspecten van softwaretoepassingen.
 
 YAML is een cruciaal onderdeel geworden van moderne softwareontwikkeling en -implementatie, vanwege zijn eenvoudige syntaxis en flexibiliteit.
-In combinatie met \LaTeX\ biedt YAML een krachtig mechanisme om gestructureerde gegevens te definiëren en te beheren, wat vooral handig is bij het integreren van klantgegevens in LaTeX-documenten.
+In combinatie met \LaTeX\ biedt YAML een krachtig mechanisme om gestructureerde gegevens te definiëren en te beheren, wat vooral handig is bij het integreren van klantgegevens in \LaTeX-documenten.
+In listing~\ref{lst:example} is een voorbeeld van YAML te zien in combinatie met \LaTeX.
 
-\noindent
-Hier een klein voorbeeld in combinatie met \LaTeX:
-
-\begin{lstlisting}[language=YAML,numbers=left,xleftmargin=15pt,caption={\ttfamily recipes/invoice.yaml},firstnumber=52]
-message:
-  type: string
-  default: |
-    Gelieve het bedrag van
-    \currency~\paramfield{totals}{total incl}
-    overmaken naar
-    \param[supplier]{account number}
-    onder vermelding van factuurnummer
-    \param{number}
-    t.a.v. \param[supplier]{name}.
-    \\[2em]
-
-    B.v.d.
-
+\begin{lstlisting}[language=YAML,caption={\ttfamily invoice-001.yaml},label={lst:example}]
+supplier: grapefruit
+client: juicing-joker
+title: Grapefruit Inc. Invoice
+subtitle: for fruits and stuff
+currency: \$
+number: 1
+date: \today
+...
 \end{lstlisting}
-Dit YAML-voorbeeld toont een specificatie van het veld \meta{message}, dat een standaardwaarde heeft voor een factuurtekst.
-De factuurtekst bevat variabelen zoals het bedrag, het factuurnummer en de naam van de leverancier, die worden ingevuld met behulp van het \pkg{lua-placeholders} pakket tijdens het compilatieproces van het LaTeX-document.
+%Dit YAML-voorbeeld wordt verder besproken in hoofdstuk~\ref{sec:output}.
 
-\subsection{De Scope van dit Artikel}
-Om een goed voorbeeld te geven van de features en toegevoegde waarde van \pkg{lua-placeholders} nemen we de \LaTeX-factuur van GinVoice als uitgangspunt.
+%Dit YAML-voorbeeld toont een specificatie van het veld \meta{message}, dat een standaardwaarde heeft voor een factuurtekst.
+%De factuurtekst bevat variabelen zoals het bedrag, het factuurnummer en de naam van de leverancier, die worden ingevuld met behulp van het \pkg{lua-placeholders} pakket tijdens het compilatieproces van het \LaTeX-document.
 
-\noindent
-\begin{figure}[!ht]
-    \centering
-    \input{diagrams/scope-bd.tex}
-    \caption{Niveaus binnen GinVoice}\label{fig:scope-bd}
-\end{figure}\\
-Dit artikel gaat voornamelijk in op het dataniveau en documentniveau, oftewel YAML en \LuaLaTeX.
-Sommige keuzes in dit artikel zijn daarentegen vanuit het perspectief van de applicatie genomen.
-
-Het is belangrijk op te merken dat de doorgestreepte technieken in diagram~\ref{fig:scope-bd}, zoals Python/GTK en JSON, niet worden behandeld in dit artikel.
-Hoewel ze aanwezig zijn in de context van GinVoice, zijn ze niet de focus van dit artikel.
-
-\subsection{Doelen}
-Dit artikel richt zich op het benadrukken van de functionaliteiten en toegevoegde waarde van het \pkg{lua-placeholders} pakket door gebruik te maken van een factuursjabloon uit GinVoice.
-De focus ligt op het integreren van klantgegevens in een LaTeX-factuur, waarbij het \pkg{lua-placeholders} pakket een cruciale rol speelt.
-De doelen van dit artikel zijn als volgt:
-\begin{enumerate}
-    \item Compilatie van de factuursjabloon, zelfs bij afwezigheid van specifieke waarden.
-    \item Uniformiteit in YAML-specificaties voor alle factuursjablonen, zodat deze met verschillende LaTeX-templates kunnen worden gekoppeld.
-    \item Vereenvoudiging van de variabele kolomdefinitie om de vrijheid van LaTeX-gebruikers te vergroten.
-    \item Ondersteuning voor het gebruik van de factuursjabloon zonder de bijbehorende applicatie, met name voor de LaTeX-minimalisten onder ons.
-\end{enumerate}
+%\subsection{De Scope van dit Artikel}\label{sec:scope}
+%Om een goed voorbeeld te geven van de features en toegevoegde waarde van \pkg{lua-placeholders} nemen we de \LaTeX-factuur van GinVoice als uitgangspunt.
+%
+%\noindent
+%\begin{figure}[!ht]
+%    \centering
+%    \input{diagrams/scope-bd.tex}
+%    \caption{Niveaus binnen GinVoice}\label{fig:scope-bd}
+%\end{figure}\\
+%Dit artikel gaat voornamelijk in op het dataniveau en documentniveau, oftewel YAML en \LaTeX.
+%Sommige keuzes in dit artikel zijn daarentegen vanuit het perspectief van de applicatie genomen.
+%
+%Het is belangrijk op te merken dat de doorgestreepte technieken niet worden behandeld in dit artikel.
+%Deze technieken omvatten Python/GTK, Lua en JSON, zoals te zien in diagram~\ref{fig:scope-bd}.
+%
+%\subsection{Doelen}
+%Dit artikel richt zich op het benadrukken van de functionaliteiten en toegevoegde waarde van het \pkg{lua-placeholders} pakket door gebruik te maken van een factuursjabloon uit GinVoice.
+%De focus ligt op het integreren van klantgegevens in een \LaTeX-factuur, waarbij het \pkg{lua-placeholders} pakket een cruciale rol speelt.
+%De doelen van dit artikel zijn als volgt:
+%\begin{enumerate}
+%    \item Compilatie van de factuursjabloon, zelfs bij afwezigheid van specifieke waarden.
+%    \item Uniformiteit in YAML-specificaties voor alle factuursjablonen, zodat deze met verschillende \LaTeX-templates kunnen worden gekoppeld.
+%    \item Vereenvoudiging van de variabele kolomdefinitie om de vrijheid van \LaTeX-gebruikers te vergroten.
+%    \item Ondersteuning voor het gebruik van de factuursjabloon zonder de bijbehorende applicatie, met name voor de \LaTeX-minimalisten onder ons.
+%\end{enumerate}

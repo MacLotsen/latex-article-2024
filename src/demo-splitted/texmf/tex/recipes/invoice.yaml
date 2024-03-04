@@ -1,6 +1,4 @@
 # Actors
-supplier:
-  type: string
 client:
   type: string
 # Invoice variables
@@ -50,13 +48,8 @@ totals:
 message:
   type: string
   default: |
-    Gelieve het bedrag van
-    \currency\ \paramfield{totals}{total incl}
-    overmaken naar
-    \param[supplier]{account number}
-    onder vermelding van factuurnummer
-    \param{number}
-    t.a.v. \param[supplier]{name}.
-    \\[2em]
+    Please send us the total of \currency~\paramfield{totals}{total incl}
+    within the coming 14 days to account number
+    \param[supplier]{account number} with the note of the invoice number \param{number}.\\[2em]
     
-    B.v.d.
+    Questions about this invoice? Please contact us.

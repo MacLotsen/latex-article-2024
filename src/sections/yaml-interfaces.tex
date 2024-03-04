@@ -1,78 +1,166 @@
-\section{YAML-Interfaces met \texttt{lua-placeholders}}
-Dit hoofdstuk introduceert het gebruik van \pkg{lua-placeholders} in YAML-interfaces voor het verbeteren van factuur\-template-functionaliteiten.
-We zullen bespreken waarom het upgraden van bestaande factuurtemplates naar een meer flexibele en geautomatiseerde oplossing noodzakelijk is.
-Daarnaast zullen we de voordelen van \pkg{lua-placeholders} introduceren en hun toepassing in YAML-interfaces verkennen.
-Het uiteindelijke doel is om een efficiënte en aanpasbare facturatie-oplossing te bieden, die gemakkelijk geïntegreerd kan worden in \LaTeX- en andere documentautomatisering-systemen.
+\section{Factuursjablonen met \texttt{lua-placeholders}}\label{sec:new situation}
+Dit hoofdstuk demonstreert hoe YAML-interfaces, ook wel \textit{recipes} genoemd, kunnen gebruikt worden als interface voor factuursjablonen en hoe dat vervolgens in \LaTeX\ gekoppeld kan worden.
+Het uiteindelijke doel is om een efficiënte en aanpasbare facturatie-interface te bieden, die gemakkelijk geïntegreerd kan worden in een verbeterde versie van GinVoice.
+In figuur~\ref{fig:scope-bd} zie je een representatie van de nieuwe situatie, waarbij alle irrelevante technieken voor dit artikel zijn doorgestreept.
+\begin{figure}[!ht]
+    \centering
+    \input{diagrams/scope-bd.tex}
+    \caption{Niveaus binnen GinVoice}\label{fig:scope-bd}
+\end{figure}
+De data, te zien in figuur~\ref{fig:klassendiagram}, wordt dus van het applicatieniveau naar het dataniveau gebracht.
+Dit zorgt ervoor dat zowel Python programmeurs als \LaTeX-gebruikers kunnen inspelen op het dataniveau, iets wat in de huidige situatie onmogelijk is.
 
 \subsection{YAML-specificaties}
-We zullen nu de YAML-specificaties m.b.t.\ de factuur bekijken:
+Aan de hand van de data-analyse in hoofdstuk~\ref{sec:invoice data} kunnen we aan de slag met de \textit{recepten}.
+Alle \textit{recepten} plaatsen we in de map \texttt{recipes} relatief vanaf het \LaTeX-project.
+Als alternatief, kan je dezelfde map bewaren onder \texttt{\$TEXMFHOME/tex/}, zodat de \textit{recepten} overal beschikbaar zijn.
 
 \subsubsection{De Factuur}
-\lstinputlisting[language=YAML,caption={\texttt{recipes/invoice.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
-De YAML-specificatie geeft een overzicht van alle variabelen en hun eigenschappen, inclusief bijzondere situaties zoals het gebruik van LaTeX-code in de standaardwaarde van de titel en de complexe placeholders in het bericht.
-Verder worden de waarden van de variabelen supplier en client gebruikt om de waarden van andere onderdelen in te laden, maar de configuratie hiervan wordt in het volgende hoofdstuk besproken.
+Het factuur-recept, oftewel \texttt{recipes/invoice.yaml}, heeft twee relaties gespecificeerd, namelijk \texttt{supplier} en \texttt{client}, zoals eerder aangegeven in hoofdstuk~\ref{sec:invoice data}.
+\lstinputlisting[language=YAML,caption={\texttt{recipes/invoice.yaml}},linerange=1-5,numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+Hoe de bijbehorende \textit{recepten} worden ingeladen aan de hand van deze waarden wordt beschreven in hoofdstuk~\ref{sec:preamble}.
+
+De data binnen het factuuronderdeel kan eventueel gestandaardiseerd worden met behulp van een \texttt{default} veld, zoals voor \texttt{title}.
+Je kunt zelfs \LaTeX\ aanroepen vanuit een standaardwaarde, zelfs andere parameters met behulp van \cs{param}.
+\lstinputlisting[language=YAML,firstnumber=6,linerange=6-21,numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+Naast standaardwaarden kunnen er ook een tijdelijke aanduidingen gespecificeerd worden, ook wel \textit{placeholders} genoemd.
+
+Het meest complexe onderdeel van de factuur is de factuurtabel.
+Hierin kan je kolommen specificeren, net zoals je gewend bent voor de andere data-types.
+\lstinputlisting[language=YAML,firstnumber=22,linerange=22-37,numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+Zoals eerder vermeld in hoofdstuk~\ref{sec:invoice data}, kan voor de meeste \LaTeX-gebruikers de kolom \texttt{total} weggelaten worden en berekend met bijvoorbeeld \LaTeX-pakket \texttt{invoice2}.
+Daarnaast is het dan nodig om veld \texttt{quantity} van het type \texttt{number} te maken en bijvoorbeeld een extra veld \texttt{quantity type} toe te voegen, zodat je de juiste notatie kan weergeven voor de \texttt{quantity}-kolom.
+
+Voor de eindtotalen heb ik gekozen voor het type \texttt{object}, zodat ik de verschillende totalen handmatig in \LaTeX\ kan zetten.
+\lstinputlisting[language=YAML,firstnumber=38,linerange=38-49,numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+De eindtotalen zouden ook op een generiekere manier kunnen, zoals het veld \texttt{extra fields} in het leveranciers-recept (zie hoofdstuk~\ref{sec:supplier spec}).
+
+
+Het laatste veld van de factuur \texttt{message} maakt gebruik van een speciale YAML-functionaliteit, namelijk \textit{multiline strings} in de standaardwaarde.
+\lstinputlisting[language=YAML,firstnumber=50,linerange=50-,numbers=left,xleftmargin=15pt]{demo/recipes/invoice.yaml}
+Met behulp van de \textit{pipe} (\texttt{|}) wordt deze modus geactiveerd.
+Deze constructie is ideaal voor grote teksten, met eventueel \LaTeX-syntax.
 
 \subsubsection{Klant}
+De klantgegevens bevatten geen bijzondere specificaties ten opzichte van de factuur.
 \lstinputlisting[language=YAML,caption={\texttt{recipes/client.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/client.yaml}
+Als alternatief daarentegen, zouden alle adresgegevens kunnen worden gespecificeerd als \texttt{list} type, met daarnaast een specificatie, zoals te zien bij \texttt{extra fields} bij de leverancier.
+Dat zou de interface meer generiek maken, echter minder goed aan te passen binnen de \LaTeX-context.
 
-\subsubsection{Leverancier}
+\subsubsection{Leverancier}\label{sec:supplier spec}
+In het geval van het \textit{recept} voor de leverancier heeft het veld \texttt{style} dezelfde functie als \texttt{supplier} en \texttt{client} van de factuur, waardoor de gebruiker kan kiezen welke stijl wordt toegepast.
 \lstinputlisting[language=YAML,caption={\texttt{recipes/supplier.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/supplier.yaml}
-In het geval van de YAML-specificatie voor de leverancier heeft het veld \texttt{style} dezelfde functie als \texttt{supplier} en \texttt{client} van de factuur, waardoor de gebruiker kan kiezen welke stijl wordt toegepast.
 
 Een ander interessant veld in deze specificatie is \texttt{extra fields}.
 Dit veld maakt gebruik van het type \texttt{table} om extra informatievelden toe te staan, zoals bijvoorbeeld het rekeningnummer van de leverancier, het BTW-nummer, of andere relevante details.
-Het gebruik van een tabel in plaats van een vast aantal velden geeft de eindgebruiker de flexibiliteit om zoveel extra informatie toe te voegen als nodig is, zonder beperkingen.
+Het gebruik van een tabel in plaats van een vast aantal velden geeft de eindgebruiker de flexibiliteit om zoveel extra informatie toe te voegen als nodig is, zonder beperkingen op te leggen.
 
 \subsubsection{Stijl}
+In het stijl-recept kunnen fonts, kleuren en meerdere plaatjes gespecificeerd worden.
+Zoals eerder aangegeven, voor \LaTeX-gebruikers zou dit volledig weggelaten kunnen worden en direct gespecificeerd kunnen worden in \LaTeX\ zelf.
 \lstinputlisting[language=YAML,caption={\texttt{recipes/style.yaml}},numbers=left,xleftmargin=15pt]{demo/recipes/style.yaml}
-Deze YAML-specificatie definieert de stijlopties die van toepassing zijn op de factuur.
+Opmerkelijk is het type voor \texttt{images}, namelijk \texttt{list}.
+In hoofdstuk~\ref{sec:typesetting} is te zien hoe deze lijst onderaan de factuur wordt ingeladen.
 
-\subsection{Nieuwe \LaTeX-template}
-Nu de YAML-specificaties in orde zijn kunnen we over stappen naar het integreren in \LaTeX.
+\subsection{De Nieuwe Factuur}
+Nu de \textit{recepten} op orde zijn kunnen we over stappen naar het integreren binnen \LaTeX.
 
-\subsubsection{Specificaties Inladen}
-YAML-specificaties, ook wel \textit{recipes} genoemd, worden ingeladen met \cs{loadrecipe}.
+\subsubsection{Recepten Inladen in de Preamble}
+De \textit{recepten} worden ingeladen met behulp van de macro \cs{loadrecipe}.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=44,linerange=44-47]{demo/invoice.tex}
-Je ziet voor de \texttt{invoice} specificatie dat het de namespace \cs{jobname} krijgt.
+Je ziet voor het \texttt{invoice}-recept dat het de \meta{namespace} \cs{jobname} krijgt.
 Dit heeft te maken met het feit dat macro \cs{param} standaard \cs{jobname} als \meta{namespace} gebruikt, wat het gebruik versimpelt.
 
-De andere \textit{recipes} geven geef extra \meta{namespace} op, wat betekent dat ze de `basename' van het pad als namespace dragen.
+De andere \textit{recepten} geven geen \meta{namespace} op, wat betekent dat ze de `basename' van het pad als \meta{namespace} dragen.
 In dit geval respectievelijk \texttt{supplier}, \texttt{client} en \texttt{style}.
 
 \subsubsection{Munteenheid}
-Voor wat betreft de munteenheid heb ik gekozen het in de macro \cs{currency} te vermommen.
-Dit vanwege het feit dat het ook in andere bestanden gebruikt wordt, zoals \texttt{invoice.cls}.
+Voor wat betreft de munteenheid heb ik ervoor gekozen om het in de macro \cs{currency} te vermommen.
+Dit is vanwege het feit omdat het ook in andere bestanden gebruikt wordt, zoals \texttt{invoice.cls}.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=49,linerange=49]{demo/invoice.tex}
-Mocht de \meta{currency} niet gezet zijn, dan wordt de standaardwaarde van \texttt{style.yaml} gebruikt, namelijk \cs{EUR}.
+Mocht de \meta{currency} niet gezet zijn, dan wordt de standaardwaarde van \texttt{style.yaml} gebruikt.
+In dit geval komt het dan neer op \cs{EUR}.
 
-\subsubsection{Waarden Inladen}
+\subsubsection{Waarden Inladen}\label{sec:preamble}
+Alle YAML-bestanden met betrekking tot de \textit{payload} administreer ik in corresponderende mappen.\\
+\dirtree{%
+    .1 \meta{projectnaam}.
+    .2 recipes.
+    .3 \meta{recept}.yaml.
+    .2 invoices.
+    .3 \meta{invoice-xxx}.yaml.
+    .2 clients.
+    .2 \textit{et cetera}.
+}
+\noindent
+Waarden, ook wel de \textit{payload} genoemd, worden vergelijkbaar als recepten ingeladen, maar dan met de macro \cs{loadpayload}.
+Dankzij de relaties, beschreven in hoofdstuk~\ref{sec:invoice data}, is het net wat complexer dan \textit{recepten}, omdat \pkg{lua-placeholders} hier niet iets standaard voor aanbied.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=51,linerange=51-54]{demo/invoice.tex}
+Voor het inladen van de factuurwaarden wordt er namelijk gecontroleerd of er een corresponderend YAML-bestand voor bestaat.
+Mocht dat het geval zijn, dan wordt die \textit{payload} ingeladen, en wordt er gebruik gemaakt van de experimentele macro \cs{strictparams}, wat in de toekomst zal inhouden dat er errors optreden bij het ontbreken van verplichte data.
 
+In het geval dat er geen corresponderend bestand voor is gevonden, dan wordt er een factuursjabloon gecompileerd.
+
+Na het inladen van de factuurdata kunnen we kijken of er een klant is gespecificeerd in de factuurdata.
+Dit doen we met behulp van \cs{hasparam}.
+Het gaat om de factuurdata, waarvoor we geen \meta{namespace} hoeven op te geven.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=56,linerange=56-58]{demo/invoice.tex}
+Over het algemeen is \cs{param} niet bedoeld voor gebruik binnen de preamble, omdat het ook placeholders met \LaTeX-opmaak kan opleveren.
+Voor dit soort listige situaties is de macro \cs{rawparam} geschreven, zoals gedaan voor de klant en leverancier.
+Deze macro heeft geen optionele argumenten, wat vaak problemen oplevert met bijvoorbeeld \texttt{pgfkeys}.
 
-\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=60,linerange=60-71]{demo/invoice.tex}
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=60,linerange=60-62]{demo/invoice.tex}
+Zoals te zien is, verschilt het inladen van de leverancier niet met het inladen van de klant.
+Echter, komt er nog wel een vervolgactie na het inladen van de leverancier, namelijk kijken of de stijl kan ingeladen worden.
+Dit gaat in de basis hetzelfde als bij de klant en leverancier zelf, echter zie je hier dat de \meta{namespace} wel gezet moet worden.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=64,linerange=64-72]{demo/invoice.tex}
+Voor de stijlgerelateerde data heb ik gekozen om de waarden gelijk te configureren in de bijbehorende macro's, zoals \cs{setmainfont} en \cs{definecolor}, zolang er maar een stijl is opgegeven.
+Je kunt er ook voor kiezen om standaard alsnog de stijlwaarden te zetten aan de hand van de standaardwaarden opgegeven in het \texttt{style}-recept, door de configuratie daarvan buiten het \cs{hasparam} block te zetten.
 
-\subsection{Verwerken in Document}
-
-\subsubsection{Header (Object)}
-Wat eerder neer kwam op \cs{makeheader}, gaat helaas nu niet meer op.
-Een bijzonder hinderlijke keuze was het, om het gegenereerde bestand \texttt{meta.tex} vanuit \texttt{invoice.cls} in te laden.
-Voor de nieuwe versie is dit ongewenst, en ik raad het je ook zeker \underline{niet} aan om data in documentklassen te verwerken.
-
+\subsection{Verwerken in Document}\label{sec:typesetting}
+Voordat we over kunnen gaan naar het compileren van facturen rest ons nog één taak, namelijk alle waarden in het document zelf zetten.
+\subsubsection{Header}
+Zoals eerder aangegeven in hoofdstuk~\ref{sec:ginvoice} is de macro \cs{makeheader} afkomstig van \texttt{invoice.cls}.
 Voor nu gaan we er van uit dat \texttt{invoice.cls} zodanig is aangepast dat het geen fouten meer veroorzaakt en dat \cs{makeheader} nu de titel en subtitel als argumenten verwacht:
-\begin{lstlisting}[language={[LaTeX]TeX}]
-\thispagestyle{headermain}
-\makeheader
-    {\param{title}}
-    {\param{subtitle}}
-\vspace{2cm}
-\end{lstlisting}
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=76,linerange=76-79]{demo/invoice.tex}
 In het voorbeeld zijn er maar twee verschillen met betrekking tot de nieuwe versie, namelijk:\\
-\cs{title} \textrightarrow \lstinline[language={[LaTeX]TeX}]|\param{title}|\\
-\cs{subtitle} \textrightarrow \lstinline[language={[LaTeX]TeX}]|\param{subtitle}|
+\cs{title}\hfill\textrightarrow\hfill\lstinline[language={[LaTeX]TeX}]|\param{title}|\\
+\cs{subtitle}\hfill\textrightarrow\hfill\lstinline[language={[LaTeX]TeX}]|\param{subtitle}|\\
+Echter, dit keer op een juiste manier doorgegeven aan de \texttt{documentclass}.
 
 \subsubsection{Informatie}
+De linker kolom van de informatie is vrij lastig, aangezien het klantinformatie bevat, maar ook factuurgegevens, zoals het nummer en de datum.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=80,linerange=80-91]{demo/invoice.tex}
+Je ziet bij de adresregels dat er per regel een regeleinde wordt gezet.
+Dit had ook gekund als er bijvoorbeeld een veld was \texttt{address lines} van het type \texttt{list}.
+Dan was dat met \lstinline|\param[client]{address lines}| in één keer opgelost, gegeven dat \texttt{postal} en \texttt{place} zijn samengevoegd op één adresregel in YAML\@.
+Het genoemde alternatief gaat er wel vanuit dat de macro \cs{paramlistconjunction} is gezet naar `\texttt{\textbackslash\textbackslash}', in plaats van de standaardwaarde `\texttt{,\~}'.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=92,linerange=92-101]{demo/invoice.tex}
+De rechter kolom van informatie is vergelijkbaar met de linker, alleen heeft het nog een bijzonder veld, namelijk \texttt{extra fields} van het type \texttt{table}.
+Op deze manier kan er een variabel aantal rijen toegevoegd worden.
+Hetzelfde zou eventueel toegepast kunnen worden voor de klantgegevens in de linker kolom.
+Dan rest alleen nog de keuze of je ze boven of onder de factuurinformatie plaatst.
 
 \subsubsection{Tabel}
+Zoals eerder genoemd is de kolomdefinitie lastig te standaardiseren.
+Op regel 105 is te zien wat de \cs{columdefs} had kunnen geven, met uitzondering op de counters die ik daarvoor eerder inzette.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=103,linerange=103-105]{demo/invoice.tex}
+Voor het tweede argument van de \texttt{invoice} omgeving is een statische header gezet.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=106,linerange=106-107]{demo/invoice.tex}
+Voor het derde argument van de \texttt{invoice} omgeving is te zien hoe de eindtotalen gezet worden in de tabel.
+Deze totalen worden iedere keer in de laatste twee kolommen van een rij geplaatst, zodat het netjes uitlijnt met de rest van de tabel.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=108,linerange=108-113]{demo/invoice.tex}
+In het laatste onderdeel van de tabel is te zien hoe aan de hand van \cs{formatrecords} iedere factuurregel wordt gezet met behulp van \cs{fortablerow}.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=114,linerange=114-119]{demo/invoice.tex}
+De algehele structuur van de tabel is nog afkomstig van de vorige situatie.
+Het opmerkelijke verschil ten opzichte van de nieuwe situatie is dat de data in allerlei tabelstructuren gezet kan worden, aangezien de data los is gekoppeld van het \LaTeX- en applicatiedomein en de uitdagingen op het gebied van typesetting is verlegd naar het \LaTeX-domein.
 
-\subsubsection{Slottekst}
+\subsubsection{Slottekst en Plaatjes}
+Waar we eerder een geavanceerde YAML-specificatie zagen voor het veld \texttt{message}, blijft de implementatie binnen \LaTeX\ vrijwel hetzelfde:
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=121,linerange=121]{demo/invoice.tex}
+Het enige verschil is:\\
+\cs{theending}\hfill\textrightarrow\hfill\lstinline|\param{message}|\\
+De plaatjes, daarentegen, zijn iets lastiger te implementeren in \LaTeX\ dankzij het type \texttt{list}.
+\lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=122,linerange=122-]{demo/invoice.tex}
+Waar eerder in Python alle plaatjes netjes naast elkaar gezet werden, waarbij tussen elk plaatje een \cs{hspace} van \texttt{1.5em}, heb ik ervoor gekozen om aan beide kanten van ieder plaatje de helft daarvan als \cs{hspace} op te voeren.
+Dit heeft te maken met de macro \cs{forlistitem}, die daar nog geen handige manier voor heeft, zoals \cs{param} dat wel heeft door het zetten van \cs{paramlistconjunction} naar `\lstinline|\hspace{1.5em}|'.

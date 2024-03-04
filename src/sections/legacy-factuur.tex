@@ -1,67 +1,98 @@
-\section{Legacy Factuur}
+\section{GinVoice}\label{sec:ginvoice}
+In dit hoofdstuk gaan we kijken naar GinVoice — een open-source Python GTK-applicatie die onder water \LaTeX\ gebruikt om facturen te maken.
+Daarnaast nemen we de meegeleverde factuurtemplate onder de loep en kijken we naar de betrokken data binnen de factuur.
 
-Dit hoofdstuk richt zich op de bestaande implementatie van de factuurtemplate in GinVoice en de noodzaak om deze te upgraden naar een meer flexibele en geautomatiseerde oplossing met behulp van \pkg{lua-placeholders}.
-We zullen de huidige \LaTeX-template van de factuur bekijken en identificeren welke delen ervan vervangen kunnen worden.
-Daarnaast zullen we de structuur van de factuurdata analyseren en bespreken waarom bepaalde onderdelen zijn opgesplitst.
-Tot slot zullen we de beperkingen van het huidige systeem bespreken en de voordelen van de overgang naar \pkg{lua-placeholders} benadrukken.
-Het gebruik van \pkg{lua-placeholders} zal uitgebreider worden behandeld in het volgende hoofdstuk.
-Deze verandering stelt ons in staat om een meer efficiënte en flexibele facturatieoplossing te creëren die volledig geïntegreerd is in het LaTeX-domein.
-
-\subsection{\LaTeX-template}
-Belangrijk om te weten van de huidige implementatie is dat GinVoice\cite{ginvoice} een Python script -- \texttt{generator.py} -- gebruikt om extra \TeX-bestanden te genereren.
-Die \TeX-bestanden worden vervolgens in de template ingeladen met \cs{include}, zodat de benodigde macro's beschikbaar zijn.
-Uiteraard zal dat niet meer het geval zijn na het introduceren van \pkg{lua-placeholders}.
-Hier is de code binnen de \texttt{document} omgeving:
-\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=52,linerange={52-55},numbers=left,xleftmargin=15pt]{ginvoice/invoice-original.tex}
-De eerste drie regels hebben enkel te maken met de \cs{makeheader} macro afkomstig van \texttt{invoice.cls} en in de preamble van dit bestand is er een gekleurde laag aan toegevoegd met behulp van een pakket uit KommaScript—\pkg{scrlayer-scrpage}.
-De \cs{makeheader} maakt intern gebruik van de \cs{title} en \cs{subtitle} macro's, die later nog aan bod komen.
-\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=56,linerange={56-67},numbers=left,xleftmargin=15pt]{ginvoice/invoice-original.tex}
-Deze bijzondere \texttt{tabular} constructie zorgt ervoor dat het adres van de klant (\cs{addressee}) samen met factuurinformatie (\cs{customerinfo}) links komt te staan en de leveranciersinformatie (\cs{supplierinfo}) rechts.
-\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=69,linerange={69-72},numbers=left,xleftmargin=15pt]{ginvoice/invoice-original.tex}
-Op regel 69 zie je dat het gegenereerde \TeX-bestand verlaat wordt ingeladen.
-Dit heeft typisch te maken met het calculatieproces van de kolombreedtes.
-Namelijk, de pagina dimensies zijn in de preamble nog onbekend, of kunnen nog veranderen.
-Een opmerkelijke functionaliteit daarentegen is de variabele kolomdefinitie, iets wat met \pkg{lua-placeholders} alsnog knap lastig kan worden.
-De macro's die vervangen gaan worden zijn \cs{tablefooter} voor de eindtotalen en \cs{tablerecords} voor de factuurregels.
-De andere onbekende macro's verplaatsen we van applicatieniveau naar het documentniveau.
-\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=74,linerange={74-78},numbers=left,xleftmargin=15pt]{ginvoice/invoice-original.tex}
-Tot slot, een bericht waarin bijvoorbeeld bedragen en betaaltermijnen in gespecificeerd kunnen worden (\cs{theending}) met daaronder optioneel drie plaatjes voor bijvoorbeeld logo's van partners of andere betrokken instanties van de bedrijfsvoering (\cs{images}).
-\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=80,linerange={80-81},numbers=left,xleftmargin=15pt]{ginvoice/invoice-original.tex}
-Samengevat gaan we kijken hoe we de volgende macro's kunnen vervangen met \pkg{lua-placeholders}: \cs{title}, \cs{subtitle}, \cs{addressee}, \cs{customerinfo}, \cs{supplierinfo}, \cs{tablefooter}, \cs{tablerecords},\\\cs{theending} en \cs{images}.
-Daarnaast zijn er nog variabelen die niet zijn voorgekomen in het document, zoals stijl gerelateerde informatie en \cs{currency}.
-
-\subsection{Factuurdata}\label{sub:invoice data}
-De factuur is opgedeeld in afzonderlijke onderdelen om redundantie te voorkomen en om verschillende aanpassingsmogelijkheden te bieden, afhankelijk van de behoeften van de gebruiker.
+\subsection{De Applicatie}
+De applicatie heeft meerdere weergaves.
+De meest voorkomende weergave is de hoofdweergave, waarin je meerdere facturen tegelijkertijd kunt opstellen.
+In deze weergave, te zien in figuur~\ref{fig:app}, zijn bijna alle onderdelen terug te zien.
 \begin{figure}[!ht]
-    \centering
-    \input{diagrams/invoice-cd.tex}
-    \caption{Klassediagram Factuur}\label{fig:invoice-cd}
+    \includegraphics[width=\linewidth]{ginvoice/app.jpg}
+    \caption{GinVoice — de applicatie}\label{fig:app}
 \end{figure}
-Bij het opstellen van een factuur is het niet wenselijk om telkens alle klant- en leveranciersinformatie opnieuw in te voeren.
-Daarom kunnen bepaalde aspecten van de factuurdata worden aangepast of weggelaten, afhankelijk van de gebruiksscenario's.
-
-In de praktijk kunnen LaTeX-gebruikers bijvoorbeeld gebruikmaken van LaTeX-pakketten zoals \texttt{invoice}, \texttt{invoice2} of andere, die rekenkundige functionaliteiten bevatten zoals totaalbedragen en eindtotalen.
-
-Bovendien kan de styling van de factuur, die momenteel op leveranciersniveau is geplaatst, direct onder het niveau van de leverancier worden geplaatst.
-Dit komt omdat de styling in de praktijk waarschijnlijk niet zal verschillen, tenzij een leverancier meerdere afdelingen heeft die elk hun eigen specifieke kleuren of logo's vereisen.
-
-Verder kunnen de titel en subtitel, die momenteel onder het niveau van de factuur zijn geplaatst, beter onder het niveau van de leverancier worden gehangen.
-Dit komt omdat deze vaak alleen per leverancier verschillen en niet per factuur.
-
-Een ander voorbeeld is het valutasymbool, dat momenteel op factuurniveau is geplaatst.
-In de praktijk kan het echter handiger zijn om dit onder het niveau van de klant te plaatsen, aangezien het meestal alleen verschilt tussen verschillende klanten en niet per factuur voor dezelfde klant.
-
-Ten slotte zijn alle styling gerelateerde oplossingen opgenomen in de factuurdata, zodat een gebruiker in de applicatie in staat is om dit aan te passen.
-Voor LaTeX-gebruikers is dit echter niet nodig, omdat zij deze aanpassingen rechtstreeks in LaTeX zelf kunnen doen.
-
-\subsection{Resultaat Voorbeeld}
-Het project zelf bevat voorbeeldgegevens die resulteren in het volgende voorbeeld:
+Zo zie je de \textit{header}, \textit{informatietabellen}, \textit{factuurregels} en de \textit{slottekst} erin terug komen.
+In figuur~\ref{fig:app} kun je zien dat de invoervelden al zijn ingevuld en dat de inhoud daarvan niet veel afwijkt als je het vergelijkt met het eindresultaat, te zien in figuur~\ref{fig:voorbeeldfactuur}.
+Er komen later in dit hoofdstuk nog andere applicatie weergaves naar voren.
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{ginvoice/ginvoice.pdf}
-    \caption{Voorbeeldfactuur gegenereerd door GinVoice}
+    \caption{Voorbeeldfactuur gegenereerd met GinVoice}
     \label{fig:voorbeeldfactuur}
 \end{figure}
-Het bovenstaande voorbeeld toont een gegenereerde factuur met behulp van de huidige implementatie van GinVoice.
-Echter, op dit moment vereist het genereren van dit voorbeeld Python, wat voor template makers die hoofdzakelijk \LaTeX\ gebruiken, ongewenst is.
-In het volgende hoofdstuk zullen we deze situatie aanpakken en laten zien hoe dit voorbeeld rechtstreeks kan worden gegenereerd met \LuaLaTeX.
+\subsection{\LaTeX-template}
+Hieronder vind je een voorbeeld van de code binnen de \texttt{document} omgeving:
+
+\lstinputlisting[name=invoice-original,language={[LaTeX]TeX},firstnumber=52,linerange={52-81},numbers=left,xleftmargin=15pt,label={lst:main},caption={\texttt{invoice.tex}}]{ginvoice/invoice-original.tex}
+
+De broncode in listing~\ref{lst:main} demonstreert verschillende macro's die vervangen zullen worden door \pkg{lua-placeholders}, waaronder \cs{title}, \cs{subtitle}, \cs{addressee}, \cs{customerinfo}, \cs{supplierinfo}, \cs{tablefooter}, \cs{tablerecords}, \cs{theending} en \cs{images}.
+Daarnaast zijn er variabelen zoals stijl gerelateerde informatie en \cs{currency} die ook behandeld zullen worden.
+
+\subsection{Gegenereerde \LaTeX-bestanden}
+Het is belangrijk om te weten dat GinVoice\cite{ginvoice} momenteel een Python script -- \texttt{generator.py} -- gebruikt om extra \TeX-bestanden te genereren.
+Deze \TeX-bestanden worden vervolgens in de template ingeladen met \cs{include}, zodat de benodigde macro's beschikbaar zijn.
+%Echter, met de introductie van \pkg{lua-placeholders} zal deze aanpak niet langer nodig zijn.
+
+Te beginnen met de taalinstelling:
+\begin{figure}[!ht]
+    \includegraphics[width=\linewidth]{ginvoice/locale.jpg}
+    \caption{Taalinstellingen}\label{fig:locale}
+\end{figure}
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{languages.tex}}]{ginvoice/languages.tex}
+Destijds heb ik ervoor gekozen om een aparte taalinstelling in de applicatie op te nemen te zien in figuur~\ref{fig:locale}, zodat woorden binnen de factuur netjes worden afgebroken met behulp van \pkg{babel}.
+
+Een ander aspect binnen de preamble is het instellen van de documenteigenschappen.
+Deze macro's komen mee vanuit het gegenereerde bestand \texttt{meta.tex}, waarvan de macro's later in het proces worden gebruikt in de \cs{hypersetup}.
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{meta.tex}}]{ginvoice/meta.tex}
+Veelvoorkomende macro's, zoals \cs{title} worden op meerdere plekken gebruikt.
+Dat is dan ook gelijk de reden waarom de \cs{title} niet in de \texttt{header.tex} hoeft te staan.
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{header.tex}}]{ginvoice/header.tex}
+Het adres van de klant wordt in een macro gestopt, waarbij de adresregels van elkaar zijn gescheiden met behulp van een regeleinde.
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{addressee.tex}}]{ginvoice/addressee.tex}
+Deze aanpak zou geschikt zijn voor een tabel met één kolom, of voor bijvoorbeeld een \texttt{enumerate} omgeving.
+
+De informatie van de klant en de leverancier gaat uit van een tabel omgeving met twee kolommen.
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{customer\_info.tex}}]{ginvoice/customer_info.tex}
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{supplier\_info.tex}}]{ginvoice/supplier_info.tex}
+Het nadeel van deze opzet is dat een en-teken (\&) helemaal geen functie heeft binnen de context van de macro zelf.
+Dat zou pas het geval zijn wanneer je binnen een \texttt{tabular} omgeving aan het werk bent.
+Los van het feit dat de meeste \LaTeX-editors hierop een foutmelding geven, werkt deze aanpak gek genoeg alsnog.
+
+De meest grote uitdaging binnen de applicatie was het configureerbaar maken van de factuurtabel.
+\begin{figure}[!ht]
+    \includegraphics[width=\linewidth]{ginvoice/table-settings.jpg}
+    \caption{Tabelinstellingen}\label{fig:tableconfig}
+\end{figure}
+Hiervoor is een aparte weergave, te zien in figuur~\ref{fig:tableconfig}.
+In het figuur zie je dat iedere kolom een andere breedte kan hebben.
+Dit kan zijn: de lengte van een stuk tekst, zo groot mogelijk, of verborgen.
+Deze toegevoegde complexiteit vanuit de applicatie heeft destijds een behoorlijk complexe uitkomst gehad op het gegenereerde \texttt{table.tex} bestand, te zien in de volgende code:
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{table.tex}}]{ginvoice/table.tex}
+Naast de complexe kolom configuratie heb je \cs{tablerecords} en \cs{tablefooter}, beide vergelijkbaar met bijvoorbeeld de \textit{leveranciersinformatie}.
+
+Het laatste gegenereerde bestand \texttt{footer.tex} definieert de laatst ontbrekende macro's, \cs{theending} en \cs{images}:
+\lstinputlisting[language={[LaTeX]TeX},caption={\texttt{footer.tex}}]{ginvoice/footer.tex}
+Destijds heb ik er voor gekozen om alle grafische bestanden ergens binnen de omgeving van GinVoice op te slaan.
+Dit heb weten te koppelen met \LaTeX\ door gebruik te maken van \cs{graphicspath}.
+
+\subsection{Factuurdata}\label{sec:invoice data}
+Als we kijken naar alle informatie afkomstig uit GinVoice, met uitzonderingen daar gelaten, dan komen we uit op de data gepresenteerd in figuur~\ref{fig:klassendiagram}.
+
+\begin{figure}[!ht]
+    \centering
+    \input{diagrams/invoice-cd}
+    \caption{Klassendiagram van de factuur}
+    \label{fig:klassendiagram}
+\end{figure}
+
+Ik heb voor het gemak alvast alle informatie opgeknipt in aparte entiteiten, die overeen zullen komen met de YAML-bestanden, uitvoerig besproken in hoofdstuk~\ref{sec:new situation}.
+
+%\subsection{Resultaat Voorbeeld}
+%Het voorbeeld in figuur~\ref{fig:voorbeeldfactuur} toont een gegenereerde factuur met behulp van de huidige implementatie van GinVoice.
+%\begin{figure}[!ht]
+%    \centering
+%    \includegraphics[width=\linewidth]{ginvoice/ginvoice.pdf}
+%    \caption{Voorbeeldfactuur gegenereerd met GinVoice}
+%    \label{fig:voorbeeldfactuur}
+%\end{figure}
+%Echter, op dit moment vereist het genereren van dit voorbeeld Python, wat voor template makers die hoofdzakelijk \LaTeX\ gebruiken, ongewenst is.
+%In het volgende hoofdstuk zullen we deze situatie aanpakken en laten zien hoe dit voorbeeld rechtstreeks kan worden gegenereerd met \LuaLaTeX.

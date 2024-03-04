@@ -1,22 +1,55 @@
-\documentclass[dutch]{ltugboat}
-\usepackage{babel}
-\usepackage[T1]{fontenc}
+\documentclass[realfonts]{maps}
+\usepackage[scaled=.8]{DejaVuSansMono}
+%\usepackage[dutch]{babel}
+%\usepackage[T1]{fontenc}
+\usepackage{multicol}
+\usepackage{calc}
 \usepackage[simplified]{pgf-umlcd}
 \usetikzlibrary{calc}
-\usepackage{graphicx}
-\usepackage{microtype}
-\usepackage[hidelinks,pdfa]{hyperref}
+%\usepackage{graphicx}
+%\usepackage{microtype}
+%\usepackage[hidelinks,pdfa]{hyperref}
 \usepackage{listings}
+% For colored variants see:
+%   https://github.com/Xerdi/texmf-packaging
+\makeatletter
+% Also having this in my TEXMF HOME
+\ifcsdef{YAMLcolonstyle}{}{%
+\usepackage{lstlangjson}
+\usepackage{lstlangyaml}
+}
+\makeatother
+\usepackage{subcaption}
 \usepackage{ulem}
-\usepackage{wasysym}
-%\title{Documentvariabelen met YAML}
-\title{Documenten in YAML specificeren en invullen met lua-placeholders in LaTeX}
+%\usepackage{wasysym}
+\usepackage{dirtree}
+
+\DeclareRobustCommand{\cs}[1]{\texttt{\char`\\#1}}
+\DeclareRobustCommand{\meta}[1]{⟨\textit{#1}⟩}
+\DeclareRobustCommand{\LuaLaTeX}{Lua\LaTeX}
+\DeclareRobustCommand{\LuaTeX}{Lua\TeX}
+\usepackage{url}
+\setcounter{secnumdepth}{3}
+
+\usepackage{etoolbox}
+\apptocmd{\dirtree}{\medskip}{}{}
+
+\setupArticle
+  {Period=voorjaar,
+   Author=Erik Nijenhuis,
+   Number=54,
+   Year=2024,
+   Page=15,
+   Title=Documenten in YAML specificeren en invullen met lua-placeholders in LaTeX,
+   Email={erik (at) xerdi dot com\\\url{https://github.com/MacLotsen}},
+   Language=dutch}
+
 
 % repeat info for each author; comment out items that don't apply.
-\author{Erik Nijenhuis}
-\address{Frans Halsstraat 38\\ Leeuwarden, 8932 JC \\ The Netherlands}
-\netaddress{erik (at) xerdi dot com}
-\personalURL{https://github.com/MacLotsen}
+%\author{Erik Nijenhuis}
+%\address{Frans Halsstraat 38\\ Leeuwarden, 8932 JC \\ The Netherlands}
+%\netaddress{erik (at) xerdi dot com}
+%\personalURL{https://github.com/MacLotsen}
 %\ORCID{0}
 % To receive a physical copy of the TUGboat issue, please include the
 % mailing address we should use, as a comment if you prefer it not be printed.
@@ -28,19 +61,47 @@
 
 \def\pkg#1{\texttt{#1}}
 
-\lstset{columns=fullflexible}
+\lstset{
+    columns=fullflexible,
+    basicstyle=\ttfamily,
+    keywordstyle={\upshape},
+    keywordstyle=[2]{\upshape},
+    commentstyle={\itshape},
+    stepnumber=1,
+    numbersep=5pt,
+    numberstyle=\ttfamily\footnotesize\itshape,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    breaklines=true,
+    captionpos=b,
+    breakatwhitespace=false
+}
+
+% Style shorthands
+\lstdefinestyle{tex}{
+    language={[LaTeX]TeX}
+}
+
+\lstdefinestyle{yaml}{
+    language=yaml
+}
+
+\lstdefinestyle{json}{
+    language=json
+}
 
 \begin{document}
     \maketitle
 
     \begin{abstract}
-        Dit artikel demonstreert hoe documentvariabelen gespecificeerd en aangeleverd kunnen worden in YAML en hoe dat vervolgens kan helpen binnen systeemintegratie aan de hand van een open-source factuur applicatie.
+        Dit artikel bekijkt de implementatie van het factuursjabloon in GinVoice en onderzoekt hoe het factuursjabloon beter kan aansluiten bij het \LaTeX-ecosysteem door de introductie van een extra datalaag in YAML met behulp van \texttt{lua-placeholders}.
+        Met de introductie van \texttt{lua-placeholders} hebben \LaTeX-gebruikers volledige vrijheid in het opmaken van factuursjablonen en zijn de factuursjablonen direct integreerbaar met de verbeterde versie van GinVoice.
     \end{abstract}
 
     \section*{Keywords}
-    \LuaTeX, \LuaLaTeX, YAML, \sout{Python}
-
-%    \tableofcontents
+    \LuaLaTeX, YAML
 
     \input{sections/inleiding}
 
@@ -49,18 +110,12 @@
     \input{sections/yaml-interfaces}
 
     \input{sections/uitvoering}
-    % notes on ginvoice
-    % Removed the \input{meta} from invoice2.cls
-    % Removed the hypersetup
 
-    \section{Conclusie}
-    % Samenvatting van hoe lua-placeholders hebben bijgedragen aan het optimaliseren van documentautomatisering.
-    % Aansporing voor lezers om lua-placeholders te verkennen en te implementeren in hun eigen projecten.
+    \input{sections/conclusie}
 
-    % Mogelijkheden voor systeemintegratie en automatisering met lua-placeholders.
-    % Vergelijking met alternatieve methoden en waarom lua-placeholders de beste keuze waren.
+    \input{sections/discussie}
+
     \bibliographystyle{tugboat}%
-    \bibliography{references}       % xampl.bib comes with BibTeX
+    \bibliography{references}
 
-    \makesignature
 \end{document}

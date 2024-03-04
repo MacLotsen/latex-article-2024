@@ -1,0 +1,29 @@
+\section{Discussie}
+
+\subsection{\LaTeX\ Compilers}
+In het artikel ga ik uit van de \LuaLaTeX-compiler.
+Voor \LaTeX-gebruikers die andere compilers gebruiken, biedt \pkg{lua-placeholders} geen oplossing.
+Hoewel sommige compilers alsnog ondersteuning bieden voor Lua, houdt \pkg{lua-placeholders} hier geen rekening mee.
+Onderzoek en implementatie zou het draagvlak van \pkg{lua-placeholders} voor de \LaTeX-gemeenschap kunnen verbeteren.
+
+\subsection{JSON vs YAML}
+JSON en YAML, beide bedoeld voor data, ben ik niet diep op ingegaan in het artikel.
+Hoewel JSON bekender is en meer compatibiliteit heeft met programmeertalen, heb ik juist voor YAML gekozen in belang van de leesbaarheid van \LaTeX-broncode.
+Zoals uitvoerig gedemonstreerd, bevatten de bestanden veel \LaTeX-broncode.
+In het geval van JSON zou dit inhouden dat iedere backslash ge-\textit{escaped} moet worden.
+Voorbeeld:
+\begin{lstlisting}[style=yaml,caption={YAML-voorbeeld}]
+title: Factuur \param{number}
+\end{lstlisting}
+\begin{lstlisting}[style=json,caption={JSON-voorbeeld}]
+{
+    "title": "\\param{number}"
+}
+\end{lstlisting}
+Voor een \LaTeX-gebruiker lijkt het mij prettiger om waarden aan te passen in YAML voor testdoeleinden, dan in JSON\@.
+
+\subsection{Roadmap GinVoice}
+De ontwikkeling heeft enige tijd stil gestaan, echter ben ik kort geleden erachter gekomen dat de oplossing ook voor Windows platformen kan werken.
+Het brengen van GinVoice naar het Windows platform verbreedt de doelgroep aanzienlijk en zou naar mijn verwachting meer draagvlak voor \LaTeX\ kunnen opleveren.
+
+Voor wat betreft het introduceren van \pkg{lua-placeholders} zijn er nog een paar obstakels te overbruggen, zoals uitdagingen met betrekking tot vertaling en de niet besproken variabele kolomdefinitie, wat nu juist een gebruiksvriendelijk onderdeel van de applicatie is.

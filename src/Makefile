@@ -3,21 +3,32 @@ BIB_FILE = references.bib
 BIB_TARGET = $(OUTPUT_DIR)/references.bib
 
 DEMO_FILES = $(OUTPUT_DIR)/invoice-template.pdf $(OUTPUT_DIR)/invoice-001.pdf $(OUTPUT_DIR)/invoice-002.pdf
+DEMO2_FILES = $(OUTPUT_DIR)/invoice2-template.pdf
+
+COPY = cp
+ifeq ($(OS),Windows_NT)
+	OUTPUT_DIR = ..\out
+	BIB_TARGET = $(OUTPUT_DIR)\references.bib
+	COPY = copy /y
+endif
 
 $(OUTPUT_DIR)/%.pdf:
 	latexmk -outdir=$(OUTPUT_DIR) -pdf -dvi- -interaction=nonstopmode -bibtex $*
 	cd $(OUTPUT_DIR) && latexmk -c $*.aux
 
 $(BIB_TARGET): $(BIB_FILE)
-	cp $(BIB_FILE) $(BIB_TARGET)
+	$(COPY) $(BIB_FILE) $(BIB_TARGET)
 
 $(DEMO_FILES):
 	$(MAKE) -C demo all
 
-article: $(DEMO_FILES) $(BIB_TARGET) ../out/the-article.pdf
+$(DEMO2_FILES):
+	$(MAKE) -C demo-splitted/grapefruit template
 
-intro: ../out/the-author.pdf
+article: $(DEMO_FILES) $(DEMO2_FILES) $(BIB_TARGET) $(OUTPUT_DIR)/the-article.pdf
 
-topics: ../out/article-topics.pdf
+intro: $(OUTPUT_DIR)/the-author.pdf
+
+topics: $(OUTPUT_DIR)/article-topics.pdf
 
 all: article intro topics
