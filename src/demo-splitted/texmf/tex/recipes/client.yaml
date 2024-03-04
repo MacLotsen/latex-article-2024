@@ -1,9 +1,9 @@
 name:
   type: string
-  placeholder: Client namme
+  placeholder: Client name
 street:
   type: string
-  placeholder: Street + nr
+  placeholder: Street name + nr
 postal:
   type: string
   placeholder: 9999 ZZ

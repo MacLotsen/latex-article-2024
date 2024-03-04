@@ -16,6 +16,3 @@ extra fields:
       type: string
     val:
       type: string
-# Suppliers style
-style:
-  type: string

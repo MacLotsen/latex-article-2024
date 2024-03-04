@@ -57,12 +57,12 @@
     \loadpayload[client]{clients/\rawparam{\jobname}{client}.yaml}
 }{}
 
-\hasparam{supplier}{%
-    \loadpayload[supplier]{suppliers/\rawparam{\jobname}{supplier}.yaml}
+\IfFileExists{supplier.yaml}{%
+    \loadpayload[supplier]{supplier.yaml}
 }{}
 
-\hasparam[supplier]{style}{%
-    \loadpayload[style]{styles/\rawparam{supplier}{style}.yaml}
+\IfFileExists{style.yaml}{%
+    \loadpayload[style]{style.yaml}
     \setmainfont{\rawparam{style}{main font}}
     \setmonofont{\rawparam{style}{mono font}}
     \definecolor{backgroundcolor}{HTML}{\rawparam{style}{background color}}

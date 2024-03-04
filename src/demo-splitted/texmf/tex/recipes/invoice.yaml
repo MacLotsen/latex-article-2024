@@ -1,6 +1,4 @@
 # Actors
-supplier:
-  type: string
 client:
   type: string
 # Invoice variables
@@ -27,7 +25,7 @@ records:
     date:
       type: string
     # Quantity is a string, as it is the representation of,
-    # not a number compatible with numprint.
+    # not a number for calculation purposes.
     quantity:
       type: string
       default: 0x

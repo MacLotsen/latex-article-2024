@@ -5,14 +5,20 @@
     \begin{class}[text width=5cm]{Data Layer}{-1cm,-6em}
         \attribute{YAML / \sout{JSON}}
     \end{class}
-    \begin{class}[text width=7cm]{Document Layer}{0,-12em}
-        \attribute{\LuaLaTeX}
+    \begin{class}[text width=5cm]{Document Layer}{1cm,-12em}
+        \attribute{\LaTeX}
     \end{class}
-    \draw[line width=2pt,{stealth}-{stealth}] ($(Application Layer.south) + (-1cm,0)$) to (Data Layer.north);
-    \draw[line width=2pt,{stealth}-{stealth}] (Data Layer.south) to ($(Document Layer.north) + (-1cm,0)$);
-    \draw[line width=2pt,{stealth}-{stealth}] ($(Application Layer.south east) + (-1.25,0)$) to ($(Document Layer.north east) + (-1.25,0)$);
+    \begin{class}[text width=7cm]{LuaTeX Layer}{0,-18em}
+        \attribute{\sout{Lua}}
+    \end{class}
+    \draw[line width=2pt,{stealth}-{stealth}] ($(Application Layer.south) + (-1,0)$) to (Data Layer.north);
+    \draw[line width=2pt,{stealth}-{stealth}] ($(Data Layer.south) + (-1.5,0)$) to ($(LuaTeX Layer.north) + (-2.5,0)$);
+    \draw[line width=2pt,{stealth}-{stealth}] ($(Application Layer.south east) + (-1.6,0)$) to ($(Document Layer.north east) + (-1.6,0)$);
+    \draw[line width=2pt,{stealth}-{stealth}] ($(Document Layer.south) + (0,0)$) to ($(LuaTeX Layer.north east) + (-2.625,0)$);
     \node (lbl1) at (.5cm, -4em) {\small writes payload};
     \node (lbl2) at (-2.5cm, -4em) {\small reads spec};
-    \node (lbl3) at (-2.5cm, -11em) {\small reads data};
-    \node (lbl4) at (3.2cm, -8em) {\small compiles};
+    \node (lbl3) at (-1.5cm, -17em) {\small reads data};
+    \node (lbl4) at (2.85cm, -4em) {\small calls};
+    \node (lbl4) at (2.85cm, -5em) {\small\LuaLaTeX};
+    \node (lbl4) at (2.35cm, -16em) {\small calls \LuaTeX};
 \end{tikzpicture}

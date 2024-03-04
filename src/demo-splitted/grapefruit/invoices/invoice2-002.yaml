@@ -1,8 +1,7 @@
-supplier: xerdi
 client: juicing-joker
-title: \providefontfamily{\xerdifont}{Righteous}\xerdifont\color{white}Xerdi
-subtitle: Factuur \param{number}
-currency: \EUR
+title: Grapefruit Inc. Invoice
+subtitle: for fruits and stuff
+currency: \$
 number: 2
 date: 12 februari 2024
 records:
