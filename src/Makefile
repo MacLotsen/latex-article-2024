@@ -5,6 +5,8 @@ BIB_TARGET = $(OUTPUT_DIR)/references.bib
 DEMO_FILES = $(OUTPUT_DIR)/invoice-template.pdf $(OUTPUT_DIR)/invoice-001.pdf $(OUTPUT_DIR)/invoice-002.pdf
 DEMO2_FILES = $(OUTPUT_DIR)/invoice2-template.pdf
 
+DEPS = ./the-article.tex sections/conclusie.tex sections/discussie.tex sections/inleiding.tex sections/legacy-factuur.tex sections/uitvoering.tex sections/yaml-interfaces.tex
+
 COPY = cp
 ifeq ($(OS),Windows_NT)
 	OUTPUT_DIR = ..\out
@@ -12,7 +14,7 @@ ifeq ($(OS),Windows_NT)
 	COPY = copy /y
 endif
 
-$(OUTPUT_DIR)/%.pdf:
+$(OUTPUT_DIR)/%.pdf: $(DEPS)
 	latexmk -outdir=$(OUTPUT_DIR) -pdf -dvi- -interaction=nonstopmode -bibtex $*
 	cd $(OUTPUT_DIR) && latexmk -c $*.aux
 

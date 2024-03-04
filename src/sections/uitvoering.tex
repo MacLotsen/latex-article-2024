@@ -19,7 +19,7 @@ lualatex --shell-escape \
      --output-directory=$(OUTPUT_DIR) \
        invoice
 \end{lstlisting}
-Waar \texttt{\$(OUTPUT\_DIR)} de gewenste uitvoer map is.
+Waar \texttt{\$(OUTPUT\_DIR)} de gewenste uitvoermap is.
 
 Echter, als je een template aan het opmaken bent, dan is blijvend genereren met \LaTeX MK gebruiksvriendelijker:
 \begin{lstlisting}[language=bash,caption={Compileren met \texttt{latexmk}}]
@@ -46,7 +46,7 @@ Om een ingevulde factuur te krijgen zullen we de volgende YAML-bestanden nodig h
     .3 \meta{client}.yaml.
 }
 
-Deze structuur is gebaseerd op de implementatie beschreven in hoofdstuk~\ref{sec:preamble}.
+Deze structuur is gebaseerd op de implementatie beschreven in paragraaf~\ref{sec:preamble}.
 Voordat de inhoud van de YAML-bestanden besproken wordt, kunnen we eerst alternatieve projectstructuren overwegen.
 
 \subsubsection{Alternatieve Projectstructuur}
@@ -54,7 +54,7 @@ Het staat iedereen natuurlijk vrij om zelf een gewenste mappenstructuur aan te l
 Zo zou je bijvoorbeeld styles onder\\
 \hspace*{4em}\texttt{/suppliers/\meta{supplier}/style.yaml}\\
 kunnen zetten, zodat je zelfs het \texttt{style} veld kunt weglaten in het leveranciers-recept.
-Een ander goed voorbeeld is bijvoorbeeld de \texttt{clients} map onder leveranciersniveau kunnen plaatsen, zodat je niet per ongeluk klanten van leveranciers door elkaar haalt.
+Een andere optie is de \texttt{clients} map onder leveranciersniveau te plaatsen, zodat je niet per ongeluk klanten van leveranciers door elkaar haalt.
 Dit zou je kunnen realiseren door het volgende te doen:
 \dirtree{%
     .1 \meta{project dir}.
@@ -68,7 +68,7 @@ Op deze manier zou de implementatie voor het inladen van klanten de variabelen \
 \hspace*{4em}\texttt{suppliers/\meta{supplier}/\meta{client}.yaml}\\
 te komen.
 
-Dezelfde overweging zou voor de facturen toegepast kunnen worden, echter is dit een lastiger scenario, aangezien de factuurdata wordt gebaseerd op de \cs{jobname} in de implementatie van hoofdstuk~\ref{sec:preamble}.
+Dezelfde overweging zou voor de facturen toegepast kunnen worden, echter is dit een lastiger scenario, aangezien de factuurdata wordt gebaseerd op de \cs{jobname} in de implementatie van paragraaf~\ref{sec:preamble}.
 Een mogelijke oplossing hiervoor is om het project per leverancier te beheren.
 Je kunt dan de \textit{recepten} in de map \texttt{\$TEXMFHOME/tex} zetten, zodat deze voor alle projecten aanwezig zijn.
 Hier een voorbeeld van een mogelijke projectstructuur:\\
@@ -96,7 +96,7 @@ Hier een voorbeeld van een mogelijke projectstructuur:\\
     .2 style.yaml.
 }
 \end{minipage}
-In dit voorbeeld is alle data met betrekking op een leverancier gescheiden, waaronder de klantinformatie en de uiteindelijke facturen.
+In dit voorbeeld is alle data per leverancier gescheiden, waaronder de klantinformatie en de uiteindelijke facturen.
 
 \subsection{Leveranciers en Klanten}\label{sec:supplier and client}
 In het voorbeeld resultaat van GinVoice was een klant \textit{Juicing Joker} te zien.
@@ -135,7 +135,7 @@ Het voordeel van de alternatieve projectstructuur is dat \texttt{invoice-templat
     \noindent
     Om een factuur te maken die exact overeenkomt met het standaard voorbeeld van GinVoice, zoals te zien in figuur~\ref{fig:result 1}, maken we gebruik van het volgende YAML-voorbeeld:
     \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=-15,caption={\texttt{invoices/invoice-001.yaml}}]{demo/invoices/invoice-001.yaml}
-    De actoren \texttt{grapefruit} en \texttt{juicing-joker}, besproken in hoofdstuk~\ref{sec:supplier and client}, zien we terug in de factuur.
+    De actoren \texttt{grapefruit} en \texttt{juicing-joker}, besproken in paragraaf~\ref{sec:supplier and client}, zien we terug in de factuur.
     Daarnaast heeft het voorbeeld dezelfde algemene informatie om tot hetzelfde resultaat te komen.
     Bij het veld \texttt{records} zie je dat een rij van de tabel veel regels inneemt.
     Bij de tweede rij van de tabel zie je dat het veld \texttt{description} een lege waarde heeft.

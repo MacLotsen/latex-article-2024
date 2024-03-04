@@ -7,10 +7,10 @@ Hoewel sommige compilers alsnog ondersteuning bieden voor Lua, houdt \pkg{lua-pl
 Onderzoek en implementatie zou het draagvlak van \pkg{lua-placeholders} voor de \LaTeX-gemeenschap kunnen verbeteren.
 
 \subsection{JSON vs YAML}
-JSON en YAML, beide bedoeld voor data, ben ik niet diep op ingegaan in het artikel.
-Hoewel JSON bekender is en meer compatibiliteit heeft met programmeertalen, heb ik juist voor YAML gekozen in belang van de leesbaarheid van \LaTeX-broncode.
+Op de keuze van YAML in plaats van JSON ben ik niet ingegaan in het artikel. Beide zijn bedoeld voor data en
+hoewel JSON bekender is en meer compatibiliteit heeft met programmeertalen, heb ik juist voor YAML gekozen in belang van de leesbaarheid van \LaTeX-broncode.
 Zoals uitvoerig gedemonstreerd, bevatten de bestanden veel \LaTeX-broncode.
-In het geval van JSON zou dit inhouden dat iedere backslash ge-\textit{escaped} moet worden.
+Bij gebruik van JSON zou iedere backslash ge-\textit{escaped} moet worden.
 Voorbeeld:
 \begin{lstlisting}[style=yaml,caption={YAML-voorbeeld}]
 title: Factuur \param{number}

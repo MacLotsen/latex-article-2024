@@ -1,8 +1,8 @@
 \section{Inleiding}
-Tijdens mijn werk als Software Engineer werd ik geconfronteerd met een uitdaging voor een bedrijf wat overeenkomsten en voorwaarden opstelt voor meerdere klanten.
+Tijdens mijn werk als Software Engineer werd ik geconfronteerd met een uitdaging voor een bedrijf dat overeenkomsten en voorwaarden opstelt voor meerdere klanten.
 Een lastige uitdaging daarin was het gescheiden houden van de klantgegevens en regelgevende documentatie.
-Dit kan, zoals ik eerder had toegepast in GinVoice\cite{ginvoice}, door extra \LaTeX-bestanden te genereren met Python waardoor vervolgens het \LaTeX-hoofdbestand gecompileerd kan worden.
-Echter, dit maal was mijn doel om een oplossing te bieden vanuit het \LaTeX-domein zelf, in plaats van het applicatiedomein.
+Dit kan, zoals ik eerder had toegepast in GinVoice\cite{ginvoice}, door extra \LaTeX-bestanden te genereren met Python, waardoor vervolgens het \LaTeX-hoofdbestand gecompileerd kan worden.
+Echter, ditmaal was mijn doel om een oplossing te bieden vanuit het \LaTeX-domein zelf, in plaats van het applicatiedomein.
 De oplossing die ik daarvoor heb geschreven heet tegenwoordig \pkg{lua-placeholders}\cite{lua-placeholders} en introduceert een gedeelde datalaag met YAML tussen \LaTeX\ en applicatie code.
 Het pakket biedt een tussenlaag, speciaal bedoeld voor data, door middel van YAML-bestanden.
 Om deze oplossing te demonstreren pakken we GinVoice.
@@ -14,8 +14,8 @@ Sinds 2016 maak ik gebruik van \LuaLaTeX, wat me destijds voor documenten binnen
 In alle afgelopen jaren heb ik veel ervaring opgedaan in het compileren met \LuaLaTeX\ en zie ik het als ontwikkelaar als een geschikte compiler, dankzij de mogelijkheid om in Lua te scripten, wat ik als programmeur uiteraard enorm waardeer.
 
 De mogelijkheid om in Lua te scripten biedt een aantal voordelen.
-Het stelt mij in staat om complexe taken uit te voeren tijdens het compileerproces, zoals het verwerken van YAML-bestanden of het manipuleren en structureren van gegevens.
-Bovendien biedt \LuaLaTeX\ ondersteuning voor Lua init scripts, waarmee ik een aangepast compilatieproces kan implementeren met een eigen CLI (Command Line Interface), waardoor het integratieproces nog verder wordt vereenvoudigd en geoptimaliseerd voor eindoplossingen.
+Het stelt mij in staat om complexe taken uit te voeren tijdens het compilatieproces, zoals het verwerken van YAML-bestanden of het manipuleren en structureren van gegevens.
+Bovendien biedt \LuaLaTeX\ ondersteuning voor Lua init-scripts, waarmee ik een aangepast compilatieproces kan implementeren met een eigen CLI (Command Line Interface), waardoor het integratieproces nog verder wordt vereenvoudigd en geoptimaliseerd voor eindoplossingen.
 
 \subsection{Wat is YAML?}
 Als DevOps Engineer ben ik vaak YAML tegengekomen bij het werken met tools zoals Docker Compose, Travis CI, GitHub Actions en NetPlan van Canonical (Ubuntu systemen).
