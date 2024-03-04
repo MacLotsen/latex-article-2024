@@ -1,10 +1,10 @@
 \section{Execution}\label{sec:output}
 % Advanced YAML payload examples, + sequence diagram command line
-Now that the legacy invoice has been fully transformed, let's see what the result looks like.
-% explain jobname
+Now that the legacy invoice has been completely transformed, let's see what the result looks like.
+If you want to participate via the command line, please refer to the full source code\cite{ginvoice-template} of these examples.
 
 \subsection{The Template Version}
-Without providing any values, we get the following result, as shown in Figure~\ref{fig:template}.\\
+Without providing any values, we get the following result, as shown in figure~\ref{fig:template}.\\
 \setlength\fboxsep{0pt}%
 \begin{figure}[!ht]%
     \fbox{\includegraphics[width=\linewidth-1pt]{invoice-template.pdf}}%
@@ -17,23 +17,22 @@ The example can be compiled as follows:
 lualatex --shell-escape \
      --jobname=invoice-template \
      --output-directory=$(OUTPUT_DIR) \
-     invoice
+       invoice
 \end{lstlisting}
-Where \texttt{\$(OUTPUT\_DIR)} is the desired output directory and \texttt{invoice-template} not corresponding to any of the payload files, therefore making it an invoice template.
+Where \texttt{\$(OUTPUT\_DIR)} is the desired output directory.
 
-However, if you are drafting a template, continually generating with \texttt{latexmk} is more user-friendly:
+However, if you are designing a template, continuous generation with \LaTeX\ MK is more user-friendly:
 \begin{lstlisting}[language=bash,caption={Compiling with \texttt{latexmk}}]
 latexmk -pvc -lualatex \
     --shell-escape \
     --jobname=invoice-template \
     --output-directory=$(OUTPUT_DIR) \
-    invoice
+      invoice
 \end{lstlisting}
-This way, you don't have to recompile every time there's a change in \TeX, it happens automatically.
-It's also very useful on the application level for previewing the result while filling in a form.
+This way, you don't have to recompile with \TeX\ every time there is a change; it happens automatically.
 
 \subsection{YAML Values}
-To get a filled-in invoice, we will need the following YAML files:
+To get a filled invoice, we will need the following YAML files:
 
 \dirtree{%
     .1 \meta{project dir}.
@@ -47,16 +46,16 @@ To get a filled-in invoice, we will need the following YAML files:
     .3 \meta{client}.yaml.
 }
 
-This structure is based on the implementation described in Chapter~\ref{sec:preamble}.
-Before discussing the contents of the YAML files, let's first consider alternative project structures.
+This structure is based on the implementation described in section~\ref{sec:preamble}.
+Before discussing the contents of the YAML files, we can first consider alternative project structures.
 
 \subsubsection{Alternative Project Structure}
 Everyone is free to create their desired folder structure.
 For example, you could place styles under\\
 \hspace*{4em}\texttt{/suppliers/\meta{supplier}/style.yaml}\\
 so that you can even omit the \texttt{style} field in the supplier recipe.
-Another good example is placing the \texttt{clients} directory under the supplier level, so you don't accidentally mix clients of suppliers.
-This could be achieved by doing the following:
+Another option is to place the \texttt{clients} folder under the supplier level, so you don't accidentally mix clients of different suppliers.
+This could be achieved as follows:
 \dirtree{%
     .1 \meta{project dir}.
     .2 suppliers.
@@ -65,50 +64,56 @@ This could be achieved by doing the following:
     .4 \meta{client}.yaml.
 }
 \noindent
-This way, the implementation for loading clients would require the variables \meta{supplier} and \meta{client}, and then proceed to the path\\
+This way, the implementation for loading clients would require the variables \meta{supplier} and \meta{client}, to then reach the path\\
 \hspace*{4em}\texttt{suppliers/\meta{supplier}/\meta{client}.yaml}.
 
-The same consideration could be applied to the invoices, however, this is a more complex scenario, as the invoice data is based on the \cs{jobname} in the implementation of Chapter~\ref{sec:preamble}.
+The same consideration could be applied to the invoices, but this is a more difficult scenario, as the invoice data is based on the \cs{jobname} in the implementation of section~\ref{sec:preamble}.
 One possible solution for this is to manage the project per supplier.
-You can then place the \textit{recipes} in the \texttt{\$TEXMFHOME/tex} directory so that they are present for all projects.
+You can then place the \textit{recipes} in the \texttt{\$TEXMFHOME/tex} directory so that they are available for all projects.
 Here's an example of a possible project structure:\\
 \begin{minipage}{.49\linewidth}
-    \dirtree{%
-        .1 \$HOME/texmf/tex.
-        .2 recipes.
-        .3 invoice.yaml.
-        .3 client.yaml.
-        .3 supplier.yaml.
-        .3 style.yaml.
-        .2 invoice.cls.
-        .2 invoice.tex.
-    }
+\dirtree{%
+    .1 \$HOME/texmf/tex.
+    .2 recipes.
+    .3 invoice.yaml.
+    .3 client.yaml.
+    .3 supplier.yaml.
+    .3 style.yaml.
+    .2 invoice.cls.
+    .2 invoice.tex.
+}
 \end{minipage}%
 \hfill
 \begin{minipage}{.49\linewidth}
-    \dirtree{%
-        .1 \meta{project dir}.
-        .2 invoices.
-        .3 \meta{invoice}.yaml.
-        .2 clients.
-        .3 \meta{client}.yaml.
-        .2 supplier.yaml.
-        .2 style.yaml.
-    }
+\dirtree{%
+    .1 \meta{project dir}.
+    .2 invoices.
+    .3 \meta{invoice}.yaml.
+    .2 clients.
+    .3 \meta{client}.yaml.
+    .2 supplier.yaml.
+    .2 style.yaml.
+}
 \end{minipage}
-In this example, all data related to a supplier is separated, including the client information and the final invoices.
+In this example, all data is separated per supplier, including client information and final invoices.
 
 \subsection{Suppliers and Clients}\label{sec:supplier and client}
-In the example result of GinVoice, a client named \textit{Juicing Joker} was shown.
+In the example result of GinVoice, a client \textit{Juicing Joker} was shown.
 In YAML, this would translate to:
 \lstinputlisting[captionpos=b,caption={\texttt{clients/juicing-joker.yaml}}]{demo/clients/juicing-joker.yaml}
 
 This way, the client can be referenced in the invoice with \texttt{juicing-joker}.
 
-For the supplier, we saw \textit{Grapefruit Inc.}\ in the example, which translates to:
+For the supplier, we saw \textit{Grapefruit Inc.} in the example, which translates to:
 \lstinputlisting[captionpos=b,caption={\texttt{suppliers/grapefruit.yaml} or \texttt{grapefruit/supplier.yaml}}]{demo/suppliers/grapefruit.yaml}
 
+And for the style:
+\lstinputlisting[captionpos=b,caption={\texttt{styles/grapefruit.yaml} or \texttt{grapefruit/style.yaml}}]{demo/styles/grapefruit.yaml}
+
+The advantage of the alternative project structure is that \texttt{invoice-template} automatically picks up the styling as well as the supplier information, as seen in figure~\ref{fig:result alt}.
+
 \onecolumn
+\subsection{Invoices}
 \begin{figure}[!ht]
 %    \centering
     \begin{subfigure}{.32\linewidth}
@@ -126,45 +131,26 @@ For the supplier, we saw \textit{Grapefruit Inc.}\ in the example, which transla
     \caption{Invoice Examples}\label{fig:pdfs}
 \end{figure}
 \begin{multicols}{2}
-    And for the style:
-    \lstinputlisting[captionpos=b,caption={\texttt{styles/grapefruit.yaml} or \texttt{grapefruit/style.yaml}}]{demo/styles/grapefruit.yaml}
-
-    The advantage of the alternative project structure is that \texttt{invoice-template} automatically picks up the styling as well as the supplier information, as seen in Figure~\ref{fig:result alt}.
-
-    \subsection{Invoices}
-    To create an invoice that exactly matches the standard example of GinVoice, as shown in Figure~\ref{fig:result 1}, we use the following YAML example:
+    \noindent
+    To create an invoice that exactly matches the standard example of GinVoice, as seen in figure~\ref{fig:result 1}, we use the following YAML example:
     \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=-15,caption={\texttt{invoices/invoice-001.yaml}}]{demo/invoices/invoice-001.yaml}
-    The actors \texttt{grapefruit} and \texttt{juicing-joker}, discussed in Chapter~\ref{sec:supplier and client}, are reflected in the invoice.
-    With other values it could make the difference between figure~\ref{fig:result 1} and~\ref{fig:result 2}.
-    Additionally, the example has the same general information to achieve the same result.
-    In the \texttt{records} field, you can see that one row of the table takes up many lines.
-    In the second row of the table, you can see that the \texttt{description} field has an empty value.
-%    \columnbreak
-    If the quotes are omitted in YAML, you'll get an error when converting to data.
-    Since the rows don't differ too much from each other, we continue the example at the \texttt{totals} field:
-    \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=34-40,firstnumber=34]{demo/invoices/invoice-001.yaml}
-%    The only difference between compiling the template version is the \cs{jobname}.
-\end{multicols}
-\twocolumn
-\lstinputlisting[xleftmargin=15pt,numbers=left,linerange=41-,firstnumber=41]{demo/invoices/invoice-001.yaml}
-Finally, in the example, we see the totals and the closing text.
+    The actors \texttt{grapefruit} and \texttt{juicing-joker}, discussed in section~\ref{sec:supplier and client}, are seen in the invoice.
+Additionally, the example has the same general information to achieve the same result.
+In the \texttt{records} field, you can see that one row of the table takes up many lines.
+In the second row of the table, you can see that the \texttt{description} field has an empty value.
+    \columnbreak
+    If the quotes are omitted in YAML, you will get an error when converting to data.
+Since the rows do not differ too much from each other, we continue the example at the \texttt{totals} field:
+    \lstinputlisting[xleftmargin=15pt,numbers=left,linerange=34-,firstnumber=34]{demo/invoices/invoice-001.yaml}
+    Lastly in the example, we see the totals and the closing text.
 
-This invoice can then be compiled with the following command:
-\begin{lstlisting}[language=bash]
+    This invoice can then be compiled with the following command:
+    \begin{lstlisting}[language=bash]
 lualatex --shell-escape \
     --jobname=invoice-001 \
     --output-directory=$(OUTPUT_DIR) \
       invoice
-\end{lstlisting}
-Where both \texttt{invoice-001} and \texttt{invoice-002} correspond to actual YAML files.
-
-%\begin{figure}[!ht]
-%    \centering
-%    \includegraphics[width=.8\linewidth]{invoice-002.pdf}%
-%    \makebox[0pt][r]{%
-%        \raisebox{-2em}{%
-%            \colorbox{white}{\includegraphics[width=.8\linewidth]{invoice-001.pdf}}%
-%        }\hspace*{1em}%
-%    }%
-%    \caption{Factuur 1 en 2}
-%\end{figure}
+    \end{lstlisting}
+%    The only difference between compiling the template version is the \cs{jobname}.
+\end{multicols}
+\twocolumn

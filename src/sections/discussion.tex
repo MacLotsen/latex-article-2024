@@ -1,0 +1,29 @@
+\section{Discussion}
+
+\subsection{\LaTeX\ Compilers}
+In the article, I assume the \LuaLaTeX\ compiler.
+For \LaTeX\ users using other compilers, \pkg{lua-placeholders} does not provide a solution.
+Although some compilers still offer support for Lua, \pkg{lua-placeholders} does not take this into account.
+Research and implementation could improve the adoption of \pkg{lua-placeholders} within the \LaTeX\ community.
+
+\subsection{JSON vs YAML}
+I did not delve into the choice of YAML over JSON in the article.
+Both are intended for data, and while JSON is more well-known and has broader compatibility with programming languages, I chose YAML for the sake of readability of \LaTeX\ source code.
+As demonstrated extensively, the files contain a lot of \LaTeX\ source code.
+When using JSON, every backslash would need to be escaped.
+For example:
+\begin{lstlisting}[style=yaml,caption={YAML example}]
+title: Invoice \param{number}
+\end{lstlisting}
+\begin{lstlisting}[style=json,caption={JSON example}]
+{
+    "title": "\\param{number}"
+}
+\end{lstlisting}
+For a \LaTeX\ user, I find it more convenient to adjust values in YAML for testing purposes than in JSON.
+
+\subsection{GinVoice Roadmap}
+Development has been stagnant for some time, but I recently discovered that the solution can also work for Windows platforms.
+Bringing GinVoice to the Windows platform significantly expands the target audience and, in my expectation, could garner more support for \LaTeX.
+
+Regarding the introduction of \pkg{lua-placeholders}, there are still a few obstacles to overcome, such as challenges related to translation and the variable column definition, which is precisely a user-friendly part of the application that has not been discussed.

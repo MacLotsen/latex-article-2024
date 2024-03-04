@@ -1,25 +1,17 @@
-\section{Conclusion}\label{sec:conclusion}
+\section{Conclusion}\label{sec:conclusie}
+This article has presented a structured approach for generating invoices using \LaTeX, with a focus on YAML interfaces and the \pkg{lua-placeholders} package.
 
-In this article, we have explored how YAML interfaces can be used as a flexible and customizable way to manage and integrate invoice templates in \LaTeX.
-By utilizing YAML files for specifying \textit{recipes} and invoice data, we have presented a structured approach for generating invoices using \LuaLaTeX\ and the \pkg{lua-placeholders} package.
+For end-users, our approach offers an enhanced experience through the optimized version of GinVoice.
+By properly separating application development and \LaTeX\ typesetting, end-users can benefit from an optimal experience with multiple templates to choose from while seamlessly working with GinVoice.
 
-Our approach enables easy customization and management of invoice templates, providing users with complete control over the layout and content of the invoices.
-Furthermore, we have considered alternative project structures that can further enhance the flexibility and management of invoice templates.
+For \LaTeX\ users, it is now easier to contribute to the templates for the new GinVoice application.
+They can effortlessly generate invoice templates using only \LaTeX, providing them with the freedom to customize and contribute templates without the need for knowledge of the internal workings of the application.
 
-The \pkg{lua-placeholders} package has played a crucial role in optimizing the document interface by providing a powerful and flexible mechanism for replacing variables in \LaTeX\ documents.
-By leveraging \LuaLaTeX, users can benefit from the speed and efficiency of Lua for data processing while still enjoying the typographic precision of \LaTeX\ for generating professionally looking documents.
+Programmers benefit from the use of \pkg{lua-placeholders} as they no longer need to have knowledge of \LaTeX, which has a steep learning curve.
+Instead, they can focus on developing the application and integrating \LaTeX\ templates, streamlining development processes and increasing efficiency.
 
-For applications like GinVoice, this approach offers significant benefits as users can now more easily create and execute \LaTeX\ invoice templates and potentially integrate them with the application interface.
+Thus, the \pkg{lua-placeholders} package has addressed all stakeholders by introducing a highly accessible file format, namely YAML.
+This allows for the optimization of invoicing processes and streamlining document workflows, saving time and effort in generating invoices and reports.
 
-We encourage our readers to explore and implement \pkg{lua-placeholders} in their own projects.
-The possibilities for system integration and document interfacing with \pkg{lua-placeholders} are extensive, providing users with the flexibility to manage complex document workflows with minimal effort.
-By using \pkg{lua-placeholders}, users can enhance the efficiency of their document processes while maintaining the quality and consistency of their documents.
-
-It is also important to consider some considerations for others considering using this package.
-While \pkg{lua-placeholders} is a powerful tool for document interfacing, it requires a certain level of familiarity with YAML and \LaTeX.
-In the case of the alternative project structure, basic knowledge of the TDS (\TeX\ Directory Structure) is also required.
-
-Finally, we have compared with alternative methods and determined that \pkg{lua-placeholders} is the best choice due to its flexibility, speed, and integration capabilities with \LaTeX.
-While there are other approaches to generating documents using \LaTeX, \pkg{lua-placeholders} offers a unique combination of functionality and ease of use, making it an attractive option for document interfacing.
-
-Overall, our research provides a practical and efficient solution for managing and integrating invoice templates in \LaTeX\ projects, allowing users to benefit from a seamless workflow for invoicing and reporting.
+I encourage readers to explore and implement the proposed approach in their own projects.
+By leveraging YAML and \pkg{lua-placeholders}, users can benefit from efficient and professional document processes, enabling them to achieve a seamless workflow for invoicing and reporting.

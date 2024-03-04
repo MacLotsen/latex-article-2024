@@ -1,0 +1,32 @@
+\newlength{\rowsize}
+\setlength{\rowsize}{\linewidth}
+\newlength{\cIsize}
+\settowidth{\cIsize}{oct. 22}
+\addtolength{\rowsize}{-\cIsize}
+\addtolength{\rowsize}{-2\tabcolsep}
+\newlength{\cIIsize}
+\settowidth{\cIIsize}{\textbf{Quantity}}
+\addtolength{\rowsize}{-\cIIsize}
+\addtolength{\rowsize}{-2\tabcolsep}
+\newlength{\cIIIsize}
+\settowidth{\cIIIsize}{\textbf{Total (incl.)}}
+\addtolength{\rowsize}{-\cIIIsize}
+\addtolength{\rowsize}{-2\tabcolsep}
+\newlength{\cIVsize}
+\settowidth{\cIVsize}{\$ 1,000.00}
+\addtolength{\rowsize}{-\cIVsize}
+\addtolength{\rowsize}{-2\tabcolsep}
+\newcommand{\columncount}{5}
+\newcolumntype\columndef{L{1.00\rowsize-2\tabcolsep} R{\cIsize} L{\cIIsize} F{\cIIIsize} F{\cIVsize}}
+\newcommand{\tableheader}{\rowheadercolor{}Description&\rowheadercolor{}Date&\rowheadercolor{}Quantity&\rowheadercolor{}Price&\rowheadercolor{}Total\\}
+\newcommand{\tablerecords}{
+	Activities project x & oct. 18 & 1h 30m & \currency\hfill\financial{65.00} & \currency\hfill\financial{97.50}\\
+	 & oct. 19 & 6h 15m & \currency\hfill\financial{65.00} & \currency\hfill\financial{406.25}\\
+	Material Costs & oct. 19 & 20x & \currency\hfill\financial{24.99} & \currency\hfill\financial{499.80}\\
+	Activities project x & oct. 21 & 2h & \currency\hfill\financial{65.00} & \currency\hfill\financial{130.00}\\
+	 & oct. 22 & 1h 30m & \currency\hfill\financial{65.00} & \currency\hfill\financial{97.50}\\}
+\newcommand{\cumoffset}{& & & }
+\newcommand{\tablefooter}{\cum{Total (ex.)}{1229.05}
+\cum{VAT (21\%)}{258.10}
+\cum{Total (incl.)}{1487.15}
+}

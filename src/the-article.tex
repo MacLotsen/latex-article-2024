@@ -38,17 +38,18 @@
 \lstset{
     columns=fullflexible,
     basicstyle=\ttfamily,
-    keywordstyle={\bfseries},
-    keywordstyle=[2]{\bfseries},
+    keywordstyle={\upshape},
+    keywordstyle=[2]{\upshape},
     commentstyle={\itshape},
     stepnumber=1,
     numbersep=5pt,
-    numberstyle=\ttfamily,
+    numberstyle=\ttfamily\footnotesize\itshape,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
     tabsize=4,
     breaklines=true,
+    captionpos=b,
     breakatwhitespace=false
 }
 
@@ -69,8 +70,8 @@
     \maketitle
 
     \begin{abstract}
-    This article demonstrates how document variables are specified and supplied using YAML and describes how this can then assist in system integration using an open-source invoice application.
-\end{abstract}
+        This article examines the implementation of the invoice template in GinVoice and explores how the invoice template can better align with the \LaTeX\ ecosystem by introducing an additional data layer in YAML using \texttt{lua-placeholders}. With the introduction of \texttt{lua-placeholders}, \LaTeX\ users have complete freedom in formatting invoice templates, and the invoice templates are directly integratable with the enhanced version of GinVoice.
+    \end{abstract}
 
     \section*{Keywords}
     \LuaLaTeX, YAML
@@ -84,6 +85,8 @@
     \input{sections/uitvoering}
 
     \input{sections/conclusie}
+
+    \input{sections/discussion}
 
     \bibliographystyle{tugboat}%
     \bibliography{references}

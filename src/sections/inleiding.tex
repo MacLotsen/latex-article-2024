@@ -1,82 +1,34 @@
 \section{Introduction}
-This article provides a demonstration of creating \LaTeX\ templates that can easily be linked to an application.
-
-In this chapter, you will learn more about the background, related techniques, the scope of the article, and the objectives of the article.
-
-Chapter~\ref{sec:legacy-invoice} discusses the invoice as it currently exists in the application, and in Chapter~\ref{sec:data}, the invoice is adapted to the new situation using \pkg{lua-placehold\-ers}\cite{lua-placeholders}.
-
-It is only in Chapter~\ref{sec:output} that we demonstrate how multiple invoices can be generated using the same source code.
-
-\subsection{Background}
-During my work as a Software Engineer, I encountered a challenge for a company that creates agreements and terms for multiple clients.
-A difficult aspect of this challenge was keeping client data separate from regulatory documentation.
-As I had previously implemented in GinVoice, this can be achieved by generating additional \LaTeX\ files with Python, which are then compiled by the main \LaTeX\ file.
-However, this time my goal was to provide a solution from within the \LaTeX\ domain itself, rather than the application domain.
-The solution I wrote for this purpose is now known as \pkg{lua-placeholders} and has many advantages over the previous approach.
-The package provides an intermediary layer, specifically designed for data, through the use of YAML files.
-To demonstrate this solution, we will use GinVoice\cite{ginvoice}.
-This example, a Python GTK application that generates invoices using \LaTeX, offers a bit more complexity and challenges than the legal domain.
+During my work as a Software Engineer, I encountered a challenge for a company that drafts agreements and terms for multiple clients.
+One of the challenging aspects was keeping client data and regulatory documentation separate.
+Previously, I addressed this challenge in GinVoice\cite{ginvoice} by generating additional \LaTeX\ files with Python, which were then compiled alongside the main \LaTeX\ file.
+However, this time, my goal was to provide a solution from within the \LaTeX\ domain itself, rather than the application domain.
+The solution I developed, now known as \pkg{lua-placeholders}\cite{lua-placeholders}, introduces a shared data layer with YAML between \LaTeX\ and application code.
+The package provides an intermediary layer specifically for data through YAML files.
+To demonstrate this solution, we take GinVoice as an example.
+This example, a Python GTK application that generates invoices with \LaTeX, offers slightly more complexity and challenges than the legal domain has to offer.
 
 \subsection{The Compiler -- \LuaLaTeX}
 My decision to use \LuaLaTeX\ as the compiler had several reasons.
-Since 2016, I have been using \LuaLaTeX, which greatly helped me with documents in computer science at the time.
-Over the years, I have gained a lot of experience in compiling with \LuaLaTeX\ and see it as a suitable compiler as a developer, thanks to the ability to script in Lua, which I, as a programmer, naturally appreciate.
+Since 2016, I have been using \LuaLaTeX, which greatly helped me with documents within computer science at the time.
+Over the years, I have gained a lot of experience in compiling with \LuaLaTeX\ and see it as a suitable compiler as a developer, thanks to the ability to script in Lua, which I naturally appreciate as a programmer.
 
 The ability to script in Lua offers several advantages.
-It allows me to perform complex tasks during the compilation process, such as processing YAML files or manipulating and structuring data.
-Furthermore, \LuaLaTeX\ supports Lua init scripts, which allows me to implement a customized compilation process with its own CLI (Command Line Interface), further simplifying and optimizing the integration process for end solutions.
+It allows me to perform complex tasks during the compilation process, such as processing YAML files or manipulating and structuring data. Additionally, \LuaLaTeX\ supports Lua init scripts, allowing me to implement a custom compilation process with its own CLI (Command Line Interface), further simplifying and optimizing the integration process for end solutions.
 
 \subsection{What is YAML?}
 As a DevOps Engineer, I have often encountered YAML while working with tools such as Docker Compose, Travis CI, GitHub Actions, and Canonical's NetPlan (Ubuntu systems).
 YAML is widely used in the DevOps world for automating and managing configurations, functioning as a structured markup language for defining configuration files and capturing infrastructural and operational aspects of software applications.
 
-YAML has become a crucial component of modern software development and deployment, due to its simple syntax and flexibility.
-When combined with \LaTeX, YAML provides a powerful mechanism for defining and managing structured data, which is especially useful when integrating client data into \LaTeX\ documents.
+YAML has become a crucial component of modern software development and deployment due to its simple syntax and flexibility. In combination with \LaTeX, YAML provides a powerful mechanism for defining and managing structured data, which is particularly useful when integrating client data into \LaTeX\ documents. Listing~\ref{lst:example} shows an example of YAML used in conjunction with \LaTeX.
 
-\noindent
-Here is a small example in combination with \LaTeX:
-
-\begin{lstlisting}[language=YAML,numbers=left,xleftmargin=15pt,caption={\ttfamily recipes/invoice.yaml},firstnumber=52]
-message:
-  type: string
-  default: |
-    Please transfer the amount of
-    \currency~\paramfield{totals}{total incl}
-    to
-    \param[supplier]{account number}
-    stating invoice number
-    \param{number}
-    for the attention of \param[supplier]{name}.
-    \\[2em]
-
-    Thank you.
-
+\begin{lstlisting}[language=YAML,caption={\ttfamily invoice-001.yaml},label={lst:example}]
+supplier: grapefruit
+client: juicing-joker
+title: Grapefruit Inc. Invoice
+subtitle: for fruits and stuff
+currency: \$
+number: 1
+date: \today
+...
 \end{lstlisting}
-This YAML example shows a specification of the field \meta{message}, which has a default value for an invoice text.
-The invoice text includes variables such as the amount, the invoice number, and the supplier's name, which are filled in using the \pkg{lua-placeholders} package during the compilation process of the \LaTeX\ document.
-
-\subsection{Scope of this Article}\label{sec:scope}
-To provide a good example of the features and added value of the \pkg{lua-placeholders} package, we take the \LaTeX\ invoice from GinVoice as a starting point.
-
-\noindent
-\begin{figure}[!ht]
-    \centering
-    \input{diagrams/scope-bd.tex}
-    \caption{Layers within GinVoice}\label{fig:scope-bd}
-\end{figure}\\
-This article mainly focuses on the data layer and document layer, namely YAML and \LaTeX.
-However, some choices in this article are made from the perspective of the application.
-
-It is important to note that the crossed-out techniques are not covered in this article.
-These techniques include Python/GTK, Lua, and JSON, as seen in figure~\ref{fig:scope-bd}.
-
-\subsection{Objectives}
-This article aims to highlight the functionalities and added value of the \pkg{lua-placeholders} package by using an invoice template from GinVoice.
-The focus is on integrating client data into a \LaTeX\ invoice, where the \pkg{lua-placeholders} package plays a crucial role.
-The objectives of this article are as follows:
-\begin{enumerate}
-    \item Compilation of the invoice template, even in the absence of specific values.
-    \item Uniformity in YAML specifications for all invoice templates, allowing them to be linked to different \LaTeX\ templates.
-    \item Simplification of the variable column definition to increase the freedom of \LaTeX\ users.
-    \item Support for using the invoice template without the associated application, especially for the \LaTeX\ minimalists among us.
-\end{enumerate}
