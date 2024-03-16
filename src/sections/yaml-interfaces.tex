@@ -95,6 +95,7 @@ Alle YAML-bestanden met betrekking tot de \textit{payload} administreer ik in co
 \noindent
 Waarden, ook wel de \textit{payload} genoemd, worden net als recepten ingeladen, maar dan met de macro \cs{loadpayload}.
 Dankzij de relaties, beschreven in paragraaf~\ref{sec:invoice data}, is het net wat complexer dan \textit{recepten}, omdat \pkg{lua-placeholders} hier niet iets standaard voor aanbiedt.
+\newpage
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=15pt,firstnumber=51,linerange=51-54]{demo/invoice.tex}
 Voor het inladen van de factuurwaarden wordt namelijk gecontroleerd of er een corresponderend YAML-bestand voor bestaat.
 Mocht dat het geval zijn, dan wordt die \textit{payload} ingeladen, en wordt er gebruik gemaakt van de experimentele macro \cs{strictparams}, wat in de toekomst zal inhouden dat er errors optreden bij het ontbreken van verplichte data.
@@ -149,6 +150,7 @@ Voor het tweede argument van de \texttt{invoice}-omgeving is een statische heade
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=106,linerange=106-107]{demo/invoice.tex}
 Voor het derde argument van de \texttt{invoice}-omgeving is te zien hoe de eindtotalen gezet worden in de tabel.
 Deze totalen worden iedere keer in de laatste twee kolommen van een rij geplaatst, zodat het netjes uitlijnt met de rest van de tabel.
+\newpage
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=108,linerange=108-113]{demo/invoice.tex}
 In het laatste onderdeel van de tabel is te zien hoe aan de hand van \cs{formatrecords} iedere factuurregel wordt gezet met behulp van \cs{fortablerow}.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=114,linerange=114-119]{demo/invoice.tex}
@@ -158,9 +160,10 @@ Het opmerkelijke verschil ten opzichte van de oude situatie is dat de data in al
 \subsubsection{Slottekst en Plaatjes}
 Waar we eerder een geavanceerde YAML-specificatie zagen voor het veld \texttt{message}, blijft de implementatie binnen \LaTeX\ vrijwel hetzelfde:
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=121,linerange=121]{demo/invoice.tex}
-Het enige verschil is:\\
-\cs{theending}\hfill\textrightarrow\hfill\lstinline|\param{message}|\\
+Het enige verschil is:\\[6pt]
+\cs{theending}\hfill\textrightarrow\hfill\lstinline|\param{message}|\\[6pt]
 De plaatjes, daarentegen, zijn iets lastiger te implementeren in \LaTeX\ dankzij het type \texttt{list}.
 \lstinputlisting[language={[LaTeX]TeX},numbers=left,xleftmargin=20pt,firstnumber=122,linerange=122-]{demo/invoice.tex}
+\newpage
 Waar eerder in Python alle plaatjes netjes naast elkaar gezet werden, waarbij tussen elk plaatje een \cs{hspace} van \texttt{1.5em}, heb ik ervoor gekozen om aan beide kanten van ieder plaatje de helft daarvan als \cs{hspace} op te voeren.
 Dit heeft te maken met de macro \cs{forlistitem}, die daar nog geen handige manier voor heeft, zoals \cs{param} dat wel heeft door het zetten van \cs{paramlistconjunction} naar `\lstinline|\hspace{1.5em}|'.

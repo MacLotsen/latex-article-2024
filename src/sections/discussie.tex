@@ -11,17 +11,29 @@ Op de keuze van YAML in plaats van JSON ben ik niet ingegaan in het artikel. Bei
 hoewel JSON bekender is en meer compatibiliteit heeft met programmeertalen, heb ik juist voor YAML gekozen in belang van de leesbaarheid van \LaTeX-broncode.
 Zoals uitvoerig gedemonstreerd, bevatten de bestanden veel \LaTeX-broncode.
 Bij gebruik van JSON zou iedere backslash ge-\textit{escaped} moet worden.
-Voorbeeld:
-\begin{lstlisting}[style=yaml,caption={YAML-voorbeeld}]
+% \begin{lstlisting}[style=yaml,caption={YAML-voorbeeld}]
+% title: Factuur \param{number}
+% \end{lstlisting}
+% \begin{lstlisting}[style=json,caption={JSON-voorbeeld}]
+% {
+%     "title": "\\param{number}"
+% }
+% \end{lstlisting}
+
+Vergelijk bijvoorbeeld:
+\begin{verbatim}
 title: Factuur \param{number}
-\end{lstlisting}
-\begin{lstlisting}[style=json,caption={JSON-voorbeeld}]
+\end{verbatim}
+en
+\begin{verbatim}
 {
-    "title": "\\param{number}"
+  "title": "\\param{number}"
 }
-\end{lstlisting}
+\end{verbatim}
+
 Voor een \LaTeX-gebruiker lijkt het mij prettiger om waarden aan te passen in YAML voor testdoeleinden, dan in JSON\@.
 
+\newpage
 \subsection{Roadmap GinVoice}
 De ontwikkeling heeft enige tijd stil gestaan, echter ben ik kort geleden erachter gekomen dat de oplossing ook voor Windows platformen kan werken.
 Het brengen van GinVoice naar het Windows platform verbreedt de doelgroep aanzienlijk en zou naar mijn verwachting meer draagvlak voor \LaTeX\ kunnen opleveren.

@@ -24,6 +24,8 @@
 %\usepackage{wasysym}
 \usepackage{dirtree}
 
+%\usepackage{showframe}
+
 \DeclareRobustCommand{\cs}[1]{\texttt{\char`\\#1}}
 \DeclareRobustCommand{\meta}[1]{⟨\textit{#1}⟩}
 \DeclareRobustCommand{\LuaLaTeX}{Lua\-\LaTeX}
@@ -40,7 +42,7 @@
    Number=54,
    Year=2024,
    Page=15,
-   Title=Documenten in YAML specificeren en invullen met lua-placeholders in LaTeX,
+   Title=Documenten in YAML specificeren en invullen met lua-placeholders in \LaTeX,
    Email={erik (at) xerdi dot com\\\url{https://github.com/MacLotsen}},
    Language=dutch}
 
@@ -97,12 +99,16 @@
 
     \begin{abstract}
         Dit artikel bekijkt de implementatie van het factuursjabloon in GinVoice en onderzoekt hoe het factuursjabloon beter kan aansluiten bij het \LaTeX-ecosysteem door de introductie van een extra datalaag in YAML met behulp van \texttt{lua-placeholders}.
-        Met de introductie van \texttt{lua-placeholders} hebben \LaTeX-gebruikers volledige vrijheid in het opmaken van factuursjablonen en zijn de factuursjablonen direct integreerbaar met de verbeterde versie van GinVoice.
+        
+
+\indent        Met de introductie van \texttt{lua-placeholders} hebben \LaTeX-gebruikers volledige vrijheid in het opmaken van factuursjablonen en zijn de factuursjablonen direct integreerbaar met de verbeterde versie van GinVoice.
     \end{abstract}
 
-    \section*{Keywords}
+    \begin{keywords}
     \LuaLaTeX, YAML
-
+    \end{keywords}
+    \enlargethispage{-12pt}
+    
     \input{sections/inleiding}
 
     \input{sections/legacy-factuur}
